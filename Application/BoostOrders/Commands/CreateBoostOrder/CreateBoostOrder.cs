@@ -1,6 +1,7 @@
 ﻿using Application.Common.Interfaces;
 using AutoMapper;
 using Domain.Entities;
+using FluentValidation;
 using MediatR;
 
 namespace Application.BoostOrders.Commands;
@@ -11,6 +12,14 @@ public class CreateBoostOrderCommand : IRequest<int>
     public string? Description { get; set; }
 }
 
+public class CreateBoostOrderCommandValidator : AbstractValidator<CreateBoostOrderCommand>
+{
+    public CreateBoostOrderCommandValidator()
+    {
+        RuleFor(command => command.Id).NotNull();
+        RuleFor(command => command.Description).MaximumLength(256);
+    }
+}
 
 public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, int>
 {

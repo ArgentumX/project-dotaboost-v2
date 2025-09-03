@@ -3,6 +3,7 @@ using Application;
 using Infrastructure;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using WebApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<BoostOrderDbContext>();
-        // dbContext.Database.Migrate(); 
+    // dbContext.Database.Migrate(); 
     BoostOrderDbInitializer.Initialize(dbContext);
 }
 
@@ -34,6 +35,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseCustomExceptionHandler();
 app.UseRouting();
 app.UseHttpsRedirection();
 app.UseCors();
