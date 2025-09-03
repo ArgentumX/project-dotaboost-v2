@@ -11,7 +11,6 @@ namespace Application.BoostOrders.Queries.GetBoostOrderDetails;
 public class GetBoostOrderDetailsQuery : IRequest<BoostOrderDto>
 {
     public int Id { get; set; }
-    public string? Description { get; set; }
 }
 
 public class GetBoostOrderDetailsHandler : IRequestHandler<GetBoostOrderDetailsQuery, BoostOrderDto>
