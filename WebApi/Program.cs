@@ -1,6 +1,7 @@
 using Application;
 using Infrastructure;
 using Infrastructure.Data;
+using WebApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +26,7 @@ using (var scope = app.Services.CreateScope())
     ApplicationDbInitializer.Initialize(dbContext);
 }
 
-app.UseExceptionHandler(cfg => {});
+app.UseCustomExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
