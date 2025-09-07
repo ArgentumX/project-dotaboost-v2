@@ -1,11 +1,13 @@
 ﻿using Application.BoostOrders.Commands;
 using Application.BoostOrders.Queries.GetBoostOrderDetails;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
 
 // [Authorize]
+[ApiVersion(1.0)]
 public class BoostOrderController : BaseController
 {
     [HttpGet("{id:int}")]
@@ -22,7 +24,7 @@ public class BoostOrderController : BaseController
 
 
     [HttpPost]
-    public async Task<ActionResult<int>> CreateBoostOrder(CreateBoostOrderCommand command)
+    public async Task<ActionResult<int>> CreateBoostOrder([FromBody] CreateBoostOrderCommand command)
     {
         command.UserId = UserId;
         var result = await Mediator.Send(command);

@@ -1,4 +1,6 @@
 using Application;
+using Asp.Versioning;
+using Asp.Versioning.Conventions;
 using Infrastructure;
 using Infrastructure.Data;
 using WebApi.Middleware;
@@ -13,7 +15,21 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(); 
 
-
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.ReportApiVersions = true;
+}).AddMvc(options =>
+{
+    options.Conventions.Add(new VersionByNamespaceConvention());
+}).AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'V";
+    options.SubstituteApiVersionInUrl = true;
+});
 
 
 var app = builder.Build();
