@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Common.Interfaces;
 
-public interface IBoostOrderDbContext
+public interface IApplicationDbContext
 {
     DbSet<BoostOrder> BoostOrders { get; }
     

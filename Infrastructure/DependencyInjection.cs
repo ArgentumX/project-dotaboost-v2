@@ -11,10 +11,14 @@ public static class DependencyInjection
     public static void AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
-        services.AddDbContext<BoostOrderDbContext>(options =>
+        services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseSqlite(connectionString);
         });
-        services.AddScoped<IBoostOrderDbContext>(provider => provider.GetService<BoostOrderDbContext>());
+        services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
+        
+        
+        
+        
     }
 }

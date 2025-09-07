@@ -17,9 +17,9 @@ public class GetBoostOrderDetailsHandler : IRequestHandler<GetBoostOrderDetailsQ
 {
     
     private readonly IMapper _mapper;
-    private readonly IBoostOrderDbContext _context;
+    private readonly IApplicationDbContext _context;
 
-    public GetBoostOrderDetailsHandler(IMapper mapper, IBoostOrderDbContext context)
+    public GetBoostOrderDetailsHandler(IMapper mapper, IApplicationDbContext context)
     {
         _mapper = mapper;
         _context = context;

@@ -5,9 +5,14 @@ using FluentValidation;
 
 namespace WebApi.Middleware;
 
-public class CustomExceptionHandlerMiddleware(RequestDelegate next)
+public class CustomExceptionHandlerMiddleware
 {
     private readonly RequestDelegate _next;
+
+    public CustomExceptionHandlerMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
 
     public async Task Invoke(HttpContext context)
     {
@@ -24,18 +29,28 @@ public class CustomExceptionHandlerMiddleware(RequestDelegate next)
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         var code = HttpStatusCode.InternalServerError;
-        var result = String.Empty;
+        object result = new { message = "An unexpected error occurred." };
+
         switch (exception)
         {
             case ValidationException validationException:
                 code = HttpStatusCode.BadRequest;
-                result = JsonSerializer.Serialize(validationException.Errors);
+                result = new { errors = validationException.Errors };
                 break;
+
             case NotFoundException notFoundException:
                 code = HttpStatusCode.NotFound;
+                result = new { message = notFoundException.Message };
                 break;
         }
+        
+        if (code == HttpStatusCode.InternalServerError)
+        {
+            Console.WriteLine(exception.Message);
+        }
+        
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)code;
+        await context.Response.WriteAsync(JsonSerializer.Serialize(result));
     }
 }

@@ -23,9 +23,9 @@ public class CreateBoostOrderCommandValidator : AbstractValidator<CreateBoostOrd
 
 public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, int>
 {
-    private readonly IBoostOrderDbContext _context;
+    private readonly IApplicationDbContext _context;
 
-    public CreateBoostOrderHandler(IBoostOrderDbContext context)
+    public CreateBoostOrderHandler(IApplicationDbContext context)
     {
         _context = context;
     }

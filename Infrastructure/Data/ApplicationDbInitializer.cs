@@ -2,9 +2,9 @@
 
 namespace Infrastructure.Data;
 
-public class BoostOrderDbInitializer
+public class ApplicationDbInitializer
 {
-    public static void Initialize(BoostOrderDbContext context)
+    public static void Initialize(ApplicationDbContext context)
     {
         context.Database.EnsureCreated();
     }
