@@ -10,7 +10,7 @@ namespace Application.BoostOrders.Queries.GetBoostOrderDetails;
 
 public class GetBoostOrderDetailsQuery : IRequest<BoostOrderDto>
 {
-    public int Id { get; set; }
+    public int Id { get; init; }
 }
 
 public class GetBoostOrderDetailsHandler : IRequestHandler<GetBoostOrderDetailsQuery, BoostOrderDto>
@@ -33,9 +33,7 @@ public class GetBoostOrderDetailsHandler : IRequestHandler<GetBoostOrderDetailsQ
             .FirstOrDefaultAsync(cancellationToken);
         
         if (entity == null)
-        {
             throw new NotFoundException(nameof(BoostOrder), request.Id);
-        }
         return entity;
     }
 }

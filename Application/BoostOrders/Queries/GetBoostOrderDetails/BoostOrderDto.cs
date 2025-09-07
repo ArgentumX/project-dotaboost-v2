@@ -7,7 +7,18 @@ public class BoostOrderDto
 {
     public int Id { get; init; }
     public string? Description { get; init; }
-
+    public bool IsParty { get; init; }
+    public bool IsPriority { get; init; }
+    public string? SteamUsername { get; init; }
+    public string? SteamPassword { get; init; }
+    public bool IsPaid { get; init; }
+    public bool IsClosed { get; init; }
+    public int StartRating { get; init; }
+    public int CurrentRating { get; init; }
+    public int RequiredRating { get; init; }
+    public int UserId { get; init; }
+    public int? BoosterId { get; init; }
+    
     private class Mapping : Profile
     {
         public Mapping()

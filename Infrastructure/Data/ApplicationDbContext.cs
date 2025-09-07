@@ -12,6 +12,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
     
     public DbSet<BoostOrder> BoostOrders => Set<BoostOrder>();
+    public DbSet<Batch> Batches => Set<Batch>();
+    public DbSet<Booster> Boosters => Set<Booster>();
     
     protected override void OnModelCreating(ModelBuilder builder)
     {

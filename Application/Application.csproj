@@ -20,8 +20,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="BoostOrders\Commands\DeleteBoostOrder\" />
-      <Folder Include="BoostOrders\Commands\UpdateBoostOrder\" />
+      <Folder Include="Batches\Commands\" />
+      <Folder Include="Batches\Queries\" />
+      <Folder Include="Boosters\Commands\" />
+      <Folder Include="Boosters\Queries\" />
       <Folder Include="Common\Mappings\" />
     </ItemGroup>
 

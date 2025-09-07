@@ -1,25 +1,41 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.BoostOrders.Commands;
 
 public class CreateBoostOrderCommand : IRequest<int>
 {
-    public int Id { get; set; }
+    public int? UserId { get; set; }
     public string? Description { get; set; }
+    public bool IsParty { get; set; } = true;
+    public bool IsPriority { get; set; } = false;
+    public string? SteamUsername { get; set; }
+    public string? SteamPassword { get; set; }
+    public int StartRating { get; set; }
+    public int RequiredRating { get; set; }
 }
 
 public class CreateBoostOrderCommandValidator : AbstractValidator<CreateBoostOrderCommand>
 {
     public CreateBoostOrderCommandValidator()
     {
-        RuleFor(command => command.Id).NotNull();
-        RuleFor(command => command.Description).MaximumLength(256);
+        RuleFor(c => c.UserId)
+            .NotNull()
+            .GreaterThan(0);
+        RuleFor(c => c.Description)
+            .MaximumLength(256);
+        RuleFor(c => c.StartRating)
+            .GreaterThanOrEqualTo(0);
+        RuleFor(c => c.RequiredRating)
+            .GreaterThan(c => c.StartRating);
     }
 }
+
 
 public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, int>
 {
@@ -32,9 +48,28 @@ public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, 
 
     public async Task<int> Handle(CreateBoostOrderCommand request, CancellationToken cancellationToken)
     {
+        var userId = request.UserId;
+
+        bool hasActiveOrder = await _context.BoostOrders.AnyAsync(o =>
+                o.UserId == request.UserId &&
+                o.IsClosed == false,
+            cancellationToken
+        );
+        
+        if (hasActiveOrder)
+            throw new BadRequestException("You cannot create new order with other active order");
+        
         var entity = new BoostOrder
         {
             Description = request.Description,
+            IsParty = request.IsParty,
+            IsPriority = request.IsPriority,
+            SteamUsername = request.SteamUsername,
+            SteamPassword = request.SteamPassword,
+            StartRating =  request.StartRating,
+            CurrentRating =  request.StartRating,
+            RequiredRating =  request.RequiredRating,
+            UserId = (int) request.UserId!, 
         };
         await _context.BoostOrders.AddAsync(entity, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
