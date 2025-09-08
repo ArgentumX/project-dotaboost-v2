@@ -16,7 +16,7 @@ public class BoostOrderDto
     public int StartRating { get; init; }
     public int CurrentRating { get; init; }
     public int RequiredRating { get; init; }
-    public int UserId { get; init; }
+    public Guid UserId { get; init; }
     public int? BoosterId { get; init; }
     
     private class Mapping : Profile

@@ -15,8 +15,7 @@ public class BoostOrder : BaseAuditableEntity
     public int CurrentRating { get; set; }
     public int RequiredRating { get; set; }
     
-    public int UserId  { get; set; }
-    public User User { get; set; } = null!;
+    public Guid UserId  { get; set; }
     
     public Booster? Booster { get; set; }
 

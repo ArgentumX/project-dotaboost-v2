@@ -10,7 +10,6 @@ namespace Application.BoostOrders.Commands;
 
 public class CreateBoostOrderCommand : IRequest<int>
 {
-    public int? UserId { get; set; }
     public string? Description { get; set; }
     public bool IsParty { get; set; } = true;
     public bool IsPriority { get; set; } = false;
@@ -18,15 +17,23 @@ public class CreateBoostOrderCommand : IRequest<int>
     public string? SteamPassword { get; set; }
     public int StartRating { get; set; }
     public int RequiredRating { get; set; }
+    
+    private Guid _userId;
+    public void SetUserId(Guid userId)
+    {
+        _userId = userId;
+    }
+
+    public Guid GetUserId()
+    {
+        return _userId;
+    }
 }
 
 public class CreateBoostOrderCommandValidator : AbstractValidator<CreateBoostOrderCommand>
 {
     public CreateBoostOrderCommandValidator()
     {
-        RuleFor(c => c.UserId)
-            .NotNull()
-            .GreaterThan(0);
         RuleFor(c => c.Description)
             .MaximumLength(256);
         RuleFor(c => c.StartRating)
@@ -48,10 +55,11 @@ public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, 
 
     public async Task<int> Handle(CreateBoostOrderCommand request, CancellationToken cancellationToken)
     {
-        var userId = request.UserId;
-
+        var userId = request.GetUserId();
+       
+        
         bool hasActiveOrder = await _context.BoostOrders.AnyAsync(o =>
-                o.UserId == request.UserId &&
+                o.UserId == userId &&
                 o.IsClosed == false,
             cancellationToken
         );
@@ -69,7 +77,7 @@ public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, 
             StartRating =  request.StartRating,
             CurrentRating =  request.StartRating,
             RequiredRating =  request.RequiredRating,
-            UserId = (int) request.UserId!, 
+            UserId = userId, 
         };
         await _context.BoostOrders.AddAsync(entity, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);

@@ -81,10 +81,9 @@ public class AccountController : BaseController
 
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
             new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.Name, user.UserName ?? string.Empty)
         };
         
         foreach (var role in roles)

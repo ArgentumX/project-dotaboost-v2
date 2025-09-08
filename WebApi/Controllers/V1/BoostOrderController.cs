@@ -1,4 +1,6 @@
 ﻿using Application.BoostOrders.Commands;
+using Application.BoostOrders.Commands.DeleteBoostOrder;
+using Application.BoostOrders.Commands.PatchBoostOrder;
 using Application.BoostOrders.Queries.GetBoostOrderDetails;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
@@ -26,7 +28,25 @@ public class BoostOrderController : BaseController
     [HttpPost]
     public async Task<ActionResult<int>> CreateBoostOrder([FromBody] CreateBoostOrderCommand command)
     {
+        command.SetUserId(UserId);
+        var result = await Mediator.Send(command);
+        return Ok(result);
+    }
+
+    [HttpPost("{id:int}/close")]
+    public async Task<ActionResult> CloseBoostOrder(int id, [FromBody] CloseBoostOrderCommand command)
+    {
         command.UserId = UserId;
+        command.Id = id;
+        var result = await Mediator.Send(command);
+        return Ok(result);
+    }
+    
+    [HttpPatch("{id:int}")]
+    public async Task<ActionResult> PatchBoostOrder(int id, [FromBody] PatchBoostOrderCommand command)
+    {
+        command.UserId = UserId;
+        command.Id = id;
         var result = await Mediator.Send(command);
         return Ok(result);
     }

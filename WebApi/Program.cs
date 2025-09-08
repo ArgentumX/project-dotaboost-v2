@@ -3,6 +3,7 @@ using Asp.Versioning;
 using Asp.Versioning.Conventions;
 using Infrastructure;
 using Infrastructure.Data;
+using WebApi;
 using WebApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,7 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(); 
+builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApiVersioning(options =>
