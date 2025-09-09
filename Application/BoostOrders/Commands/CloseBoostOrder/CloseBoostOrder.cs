@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.BoostOrders.Commands.DeleteBoostOrder;
 
-public class CloseBoostOrderCommand : IRequest<int>
+public class CloseBoostOrderCommand : IRequest<Guid>
 {
-    public int? Id { get; set; }
+    public Guid? Id { get; set; }
     public Guid? UserId { get; set; }
 }
 
@@ -21,7 +21,7 @@ public class CloseBoostOrderCommandValidator : AbstractValidator<CloseBoostOrder
 
 
 
-public class CloseBoostOrderHandler : IRequestHandler<CloseBoostOrderCommand, int>
+public class CloseBoostOrderHandler : IRequestHandler<CloseBoostOrderCommand, Guid>
 {
     private readonly IApplicationDbContext _context;
 
@@ -30,7 +30,7 @@ public class CloseBoostOrderHandler : IRequestHandler<CloseBoostOrderCommand, in
         _context = context;
     }
 
-    public async Task<int> Handle(CloseBoostOrderCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(CloseBoostOrderCommand request, CancellationToken cancellationToken)
     {
         var userId = request.UserId;
 

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.BoostOrders.Commands;
 
-public class CreateBoostOrderCommand : IRequest<int>
+public class CreateBoostOrderCommand : IRequest<Guid>
 {
     public string? Description { get; set; }
     public bool IsParty { get; set; } = true;
@@ -44,7 +44,7 @@ public class CreateBoostOrderCommandValidator : AbstractValidator<CreateBoostOrd
 }
 
 
-public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, int>
+public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, Guid>
 {
     private readonly IApplicationDbContext _context;
 
@@ -53,7 +53,7 @@ public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, 
         _context = context;
     }
 
-    public async Task<int> Handle(CreateBoostOrderCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(CreateBoostOrderCommand request, CancellationToken cancellationToken)
     {
         var userId = request.GetUserId();
        

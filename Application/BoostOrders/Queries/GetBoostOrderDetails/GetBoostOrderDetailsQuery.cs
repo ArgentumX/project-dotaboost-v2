@@ -10,7 +10,7 @@ namespace Application.BoostOrders.Queries.GetBoostOrderDetails;
 
 public class GetBoostOrderDetailsQuery : IRequest<BoostOrderDto>
 {
-    public int Id { get; init; }
+    public Guid Id { get; init; }
 }
 
 public class GetBoostOrderDetailsHandler : IRequestHandler<GetBoostOrderDetailsQuery, BoostOrderDto>

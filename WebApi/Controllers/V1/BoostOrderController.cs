@@ -12,9 +12,9 @@ namespace WebApi.Controllers;
 [ApiVersion(1.0)]
 public class BoostOrderController : BaseController
 {
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:guid}")]
     [AllowAnonymous]
-    public async Task<ActionResult<BoostOrderDto>> GetBoostOrderDetails(int id)
+    public async Task<ActionResult<BoostOrderDto>> GetBoostOrderDetails(Guid id)
     {
         var query = new GetBoostOrderDetailsQuery
         {
@@ -33,8 +33,8 @@ public class BoostOrderController : BaseController
         return Ok(result);
     }
 
-    [HttpPost("{id:int}/close")]
-    public async Task<ActionResult> CloseBoostOrder(int id, [FromBody] CloseBoostOrderCommand command)
+    [HttpPost("{id:guid}/close")]
+    public async Task<ActionResult> CloseBoostOrder(Guid id, [FromBody] CloseBoostOrderCommand command)
     {
         command.UserId = UserId;
         command.Id = id;
@@ -42,8 +42,8 @@ public class BoostOrderController : BaseController
         return Ok(result);
     }
     
-    [HttpPatch("{id:int}")]
-    public async Task<ActionResult> PatchBoostOrder(int id, [FromBody] PatchBoostOrderCommand command)
+    [HttpPatch("{id:guid}")]
+    public async Task<ActionResult> PatchBoostOrder(Guid id, [FromBody] PatchBoostOrderCommand command)
     {
         command.UserId = UserId;
         command.Id = id;

@@ -11,6 +11,6 @@ public class Batch : BaseAuditableEntity
     public int BoostOrderId { get; set; }
     public BoostOrder BoostOrder { get; set; } = null!;
     
-    public int BoosterId { get; set; }
+    public Guid BoosterId { get; set; }
     public Booster Booster { get; set; } = null!;
 }

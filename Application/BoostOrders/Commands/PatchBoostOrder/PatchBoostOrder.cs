@@ -7,10 +7,10 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-public class PatchBoostOrderCommand : IRequest<int>
+public class PatchBoostOrderCommand : IRequest<Guid>
 {
     public string Description { get; set; } = "";
-    public int? Id { get; set; }
+    public Guid? Id { get; set; }
     public Guid? UserId { get; set; }
 }
 
@@ -24,7 +24,7 @@ public class PatchBoostOrderCommandValidator : AbstractValidator<PatchBoostOrder
 
 
 
-public class PatchBoostOrderHandler : IRequestHandler<PatchBoostOrderCommand, int>
+public class PatchBoostOrderHandler : IRequestHandler<PatchBoostOrderCommand, Guid>
 {
     private readonly IApplicationDbContext _context;
 
@@ -33,7 +33,7 @@ public class PatchBoostOrderHandler : IRequestHandler<PatchBoostOrderCommand, in
         _context = context;
     }
 
-    public async Task<int> Handle(PatchBoostOrderCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(PatchBoostOrderCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.BoostOrders.FirstOrDefaultAsync(order =>
             order.Id == request.Id, cancellationToken);
