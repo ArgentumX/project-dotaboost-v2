@@ -5,7 +5,7 @@ namespace Application.BoostOrders.Queries.GetBoostOrderDetails;
 
 public class BoostOrderDto
 {
-    public int Id { get; init; }
+    public Guid Id { get; init; }
     public string? Description { get; init; }
     public bool IsParty { get; init; }
     public bool IsPriority { get; init; }
@@ -17,7 +17,7 @@ public class BoostOrderDto
     public int CurrentRating { get; init; }
     public int RequiredRating { get; init; }
     public Guid UserId { get; init; }
-    public int? BoosterId { get; init; }
+    public Guid? BoosterId { get; init; }
     
     private class Mapping : Profile
     {

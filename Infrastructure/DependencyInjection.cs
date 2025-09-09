@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Application.Common.Interfaces;
+using Infrastructure.Services;
 
 namespace Infrastructure;
 
@@ -21,6 +22,12 @@ public static class DependencyInjection
             options.UseSqlite(connectionString);
         });
         services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
+        
+        
+        // Current User service
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddHttpContextAccessor();
+        
         
         // Use full Identity (users + roles + token providers)
         services

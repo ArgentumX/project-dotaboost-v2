@@ -28,7 +28,6 @@ public class BoostOrderController : BaseController
     [HttpPost]
     public async Task<ActionResult<int>> CreateBoostOrder([FromBody] CreateBoostOrderCommand command)
     {
-        command.SetUserId(UserId);
         var result = await Mediator.Send(command);
         return Ok(result);
     }
@@ -36,7 +35,6 @@ public class BoostOrderController : BaseController
     [HttpPost("{id:guid}/close")]
     public async Task<ActionResult> CloseBoostOrder(Guid id, [FromBody] CloseBoostOrderCommand command)
     {
-        command.UserId = UserId;
         command.Id = id;
         var result = await Mediator.Send(command);
         return Ok(result);
@@ -45,7 +43,6 @@ public class BoostOrderController : BaseController
     [HttpPatch("{id:guid}")]
     public async Task<ActionResult> PatchBoostOrder(Guid id, [FromBody] PatchBoostOrderCommand command)
     {
-        command.UserId = UserId;
         command.Id = id;
         var result = await Mediator.Send(command);
         return Ok(result);

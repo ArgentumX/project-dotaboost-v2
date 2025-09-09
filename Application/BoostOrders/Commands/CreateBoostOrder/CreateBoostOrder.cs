@@ -17,17 +17,6 @@ public class CreateBoostOrderCommand : IRequest<Guid>
     public string? SteamPassword { get; set; }
     public int StartRating { get; set; }
     public int RequiredRating { get; set; }
-    
-    private Guid _userId;
-    public void SetUserId(Guid userId)
-    {
-        _userId = userId;
-    }
-
-    public Guid GetUserId()
-    {
-        return _userId;
-    }
 }
 
 public class CreateBoostOrderCommandValidator : AbstractValidator<CreateBoostOrderCommand>
@@ -47,15 +36,17 @@ public class CreateBoostOrderCommandValidator : AbstractValidator<CreateBoostOrd
 public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, Guid>
 {
     private readonly IApplicationDbContext _context;
+    private readonly ICurrentUserService _currentUserService;
 
-    public CreateBoostOrderHandler(IApplicationDbContext context)
+    public CreateBoostOrderHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
     {
         _context = context;
+        _currentUserService = currentUserService;
     }
 
     public async Task<Guid> Handle(CreateBoostOrderCommand request, CancellationToken cancellationToken)
     {
-        var userId = request.GetUserId();
+        var userId = _currentUserService.UserId;
        
         
         bool hasActiveOrder = await _context.BoostOrders.AnyAsync(o =>

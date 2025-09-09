@@ -10,7 +10,6 @@ namespace Application.BoostOrders.Commands.DeleteBoostOrder;
 public class CloseBoostOrderCommand : IRequest<Guid>
 {
     public Guid? Id { get; set; }
-    public Guid? UserId { get; set; }
 }
 
 public class CloseBoostOrderCommandValidator : AbstractValidator<CloseBoostOrderCommand>
@@ -24,15 +23,19 @@ public class CloseBoostOrderCommandValidator : AbstractValidator<CloseBoostOrder
 public class CloseBoostOrderHandler : IRequestHandler<CloseBoostOrderCommand, Guid>
 {
     private readonly IApplicationDbContext _context;
+    private readonly ICurrentUserService _currentUserService;
 
-    public CloseBoostOrderHandler(IApplicationDbContext context)
+    public CloseBoostOrderHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
     {
         _context = context;
+        _currentUserService = currentUserService;
     }
-
     public async Task<Guid> Handle(CloseBoostOrderCommand request, CancellationToken cancellationToken)
     {
-        var userId = request.UserId;
+        if (request.Id == null)
+            throw new BadRequestException("Id cannot be null");
+        
+        var userId = _currentUserService.UserId;
 
         var entity = await _context.BoostOrders.FirstOrDefaultAsync(order =>
             order.Id == request.Id && order.IsClosed == false, cancellationToken);
