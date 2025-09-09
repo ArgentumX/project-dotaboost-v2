@@ -1,4 +1,7 @@
-﻿namespace Application.BoostOrders.Commands.PatchBoostOrder;
+﻿using Application.BoostOrders.Queries.GetBoostOrderDetails;
+using AutoMapper;
+
+namespace Application.BoostOrders.Commands.PatchBoostOrder;
 
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
@@ -7,7 +10,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-public class PatchBoostOrderCommand : IRequest<Guid>
+public class PatchBoostOrderCommand : IRequest<BoostOrderDto>
 {
     public string Description { get; set; } = "";
     public Guid? Id { get; set; }
@@ -23,18 +26,24 @@ public class PatchBoostOrderCommandValidator : AbstractValidator<PatchBoostOrder
 
 
 
-public class PatchBoostOrderHandler : IRequestHandler<PatchBoostOrderCommand, Guid>
+public class PatchBoostOrderHandler : IRequestHandler<PatchBoostOrderCommand, BoostOrderDto>
 {
     private readonly IApplicationDbContext _context;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IMapper _mapper;
 
-    public PatchBoostOrderHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    public PatchBoostOrderHandler(
+        IApplicationDbContext context,
+        ICurrentUserService currentUserService,
+        IMapper mapper
+    )
     {
         _context = context;
         _currentUserService = currentUserService;
+        _mapper = mapper;
     }
 
-    public async Task<Guid> Handle(PatchBoostOrderCommand request, CancellationToken cancellationToken)
+    public async Task<BoostOrderDto> Handle(PatchBoostOrderCommand request, CancellationToken cancellationToken)
     {
         var userId = _currentUserService.UserId;
         var entity = await _context.BoostOrders.FirstOrDefaultAsync(order =>
@@ -45,6 +54,7 @@ public class PatchBoostOrderHandler : IRequestHandler<PatchBoostOrderCommand, Gu
         
         entity.Description = request.Description;
         await _context.SaveChangesAsync(cancellationToken);
-        return entity.Id;
+        var result = _mapper.Map<BoostOrderDto>(entity);
+        return result;
     }
 }

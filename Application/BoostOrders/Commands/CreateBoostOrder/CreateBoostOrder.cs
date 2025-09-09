@@ -1,4 +1,5 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.BoostOrders.Queries.GetBoostOrderDetails;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using AutoMapper;
 using Domain.Entities;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.BoostOrders.Commands;
 
-public class CreateBoostOrderCommand : IRequest<Guid>
+public class CreateBoostOrderCommand : IRequest<BoostOrderDto>
 {
     public string? Description { get; set; }
     public bool IsParty { get; set; } = true;
@@ -33,18 +34,23 @@ public class CreateBoostOrderCommandValidator : AbstractValidator<CreateBoostOrd
 }
 
 
-public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, Guid>
+public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, BoostOrderDto>
 {
     private readonly IApplicationDbContext _context;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IMapper _mapper;
 
-    public CreateBoostOrderHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    public CreateBoostOrderHandler(
+        IApplicationDbContext context,
+        ICurrentUserService currentUserService,
+        IMapper mapper
+    )
     {
         _context = context;
         _currentUserService = currentUserService;
+        _mapper = mapper;
     }
-
-    public async Task<Guid> Handle(CreateBoostOrderCommand request, CancellationToken cancellationToken)
+    public async Task<BoostOrderDto> Handle(CreateBoostOrderCommand request, CancellationToken cancellationToken)
     {
         var userId = _currentUserService.UserId;
        
@@ -72,6 +78,7 @@ public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, 
         };
         await _context.BoostOrders.AddAsync(entity, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
-        return entity.Id;
+        var result = _mapper.Map<BoostOrderDto>(entity);
+        return result;
     }
 }

@@ -24,6 +24,7 @@ public class BoostOrderDto
         public Mapping()
         {
             CreateMap<BoostOrder, BoostOrderDto>();
+            CreateMap<BoostOrderDto, BoostOrder>();
         }
     }
 }

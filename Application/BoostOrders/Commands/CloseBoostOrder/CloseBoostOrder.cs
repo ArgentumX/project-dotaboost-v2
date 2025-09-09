@@ -1,5 +1,7 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.BoostOrders.Queries.GetBoostOrderDetails;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using AutoMapper;
 using Domain.Entities;
 using FluentValidation;
 using MediatR;
@@ -7,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.BoostOrders.Commands.DeleteBoostOrder;
 
-public class CloseBoostOrderCommand : IRequest<Guid>
+public class CloseBoostOrderCommand : IRequest<BoostOrderDto>
 {
     public Guid? Id { get; set; }
 }
@@ -20,17 +22,23 @@ public class CloseBoostOrderCommandValidator : AbstractValidator<CloseBoostOrder
 
 
 
-public class CloseBoostOrderHandler : IRequestHandler<CloseBoostOrderCommand, Guid>
+public class CloseBoostOrderHandler : IRequestHandler<CloseBoostOrderCommand, BoostOrderDto>
 {
     private readonly IApplicationDbContext _context;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IMapper _mapper;
 
-    public CloseBoostOrderHandler(IApplicationDbContext context, ICurrentUserService currentUserService)
+    public CloseBoostOrderHandler(
+        IApplicationDbContext context,
+        ICurrentUserService currentUserService,
+        IMapper mapper
+        )
     {
         _context = context;
         _currentUserService = currentUserService;
+        _mapper = mapper;
     }
-    public async Task<Guid> Handle(CloseBoostOrderCommand request, CancellationToken cancellationToken)
+    public async Task<BoostOrderDto> Handle(CloseBoostOrderCommand request, CancellationToken cancellationToken)
     {
         if (request.Id == null)
             throw new BadRequestException("Id cannot be null");
@@ -49,6 +57,8 @@ public class CloseBoostOrderHandler : IRequestHandler<CloseBoostOrderCommand, Gu
         entity.IsClosed = true;
         
         await _context.SaveChangesAsync(cancellationToken);
-        return entity.Id;
+        
+        var result = _mapper.Map<BoostOrderDto>(entity);
+        return result;
     }
 }
