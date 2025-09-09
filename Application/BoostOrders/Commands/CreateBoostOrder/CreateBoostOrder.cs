@@ -37,22 +37,22 @@ public class CreateBoostOrderCommandValidator : AbstractValidator<CreateBoostOrd
 public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, BoostOrderDto>
 {
     private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
+    private readonly IUserContext _userContext;
     private readonly IMapper _mapper;
 
     public CreateBoostOrderHandler(
         IApplicationDbContext context,
-        ICurrentUserService currentUserService,
+        IUserContext userContext,
         IMapper mapper
     )
     {
         _context = context;
-        _currentUserService = currentUserService;
+        _userContext = userContext;
         _mapper = mapper;
     }
     public async Task<BoostOrderDto> Handle(CreateBoostOrderCommand request, CancellationToken cancellationToken)
     {
-        var userId = _currentUserService.UserId;
+        var userId = _userContext.UserId;
        
         
         bool hasActiveOrder = await _context.BoostOrders.AnyAsync(o =>

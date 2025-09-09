@@ -29,23 +29,23 @@ public class PatchBoostOrderCommandValidator : AbstractValidator<PatchBoostOrder
 public class PatchBoostOrderHandler : IRequestHandler<PatchBoostOrderCommand, BoostOrderDto>
 {
     private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
+    private readonly IUserContext _userContext;
     private readonly IMapper _mapper;
 
     public PatchBoostOrderHandler(
         IApplicationDbContext context,
-        ICurrentUserService currentUserService,
+        IUserContext userContext,
         IMapper mapper
     )
     {
         _context = context;
-        _currentUserService = currentUserService;
+        _userContext = userContext;
         _mapper = mapper;
     }
 
     public async Task<BoostOrderDto> Handle(PatchBoostOrderCommand request, CancellationToken cancellationToken)
     {
-        var userId = _currentUserService.UserId;
+        var userId = _userContext.UserId;
         var entity = await _context.BoostOrders.FirstOrDefaultAsync(order =>
             order.Id == request.Id, cancellationToken);
         

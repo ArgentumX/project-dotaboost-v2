@@ -22,8 +22,6 @@
     <ItemGroup>
       <Folder Include="Batches\Commands\" />
       <Folder Include="Batches\Queries\" />
-      <Folder Include="Boosters\Queries\" />
-      <Folder Include="Common\Mappings\" />
     </ItemGroup>
 
 </Project>

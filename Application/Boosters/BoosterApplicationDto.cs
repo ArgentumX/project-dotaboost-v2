@@ -6,6 +6,7 @@ namespace Application.Boosters;
 
 public class BoosterApplicationDto
 {
+    public Guid Id { get; init; }
     public Guid UserId { get; init; }
     public string Motivation { get; init; } = null!;
     public ApplicationStatus Status { get; init; }

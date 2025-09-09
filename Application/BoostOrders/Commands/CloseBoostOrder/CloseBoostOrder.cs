@@ -25,17 +25,17 @@ public class CloseBoostOrderCommandValidator : AbstractValidator<CloseBoostOrder
 public class CloseBoostOrderHandler : IRequestHandler<CloseBoostOrderCommand, BoostOrderDto>
 {
     private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
+    private readonly IUserContext _userContext;
     private readonly IMapper _mapper;
 
     public CloseBoostOrderHandler(
         IApplicationDbContext context,
-        ICurrentUserService currentUserService,
+        IUserContext userContext,
         IMapper mapper
         )
     {
         _context = context;
-        _currentUserService = currentUserService;
+        _userContext = userContext;
         _mapper = mapper;
     }
     public async Task<BoostOrderDto> Handle(CloseBoostOrderCommand request, CancellationToken cancellationToken)
@@ -43,7 +43,7 @@ public class CloseBoostOrderHandler : IRequestHandler<CloseBoostOrderCommand, Bo
         if (request.Id == null)
             throw new BadRequestException("Id cannot be null");
         
-        var userId = _currentUserService.UserId;
+        var userId = _userContext.UserId;
 
         var entity = await _context.BoostOrders.FirstOrDefaultAsync(order =>
             order.Id == request.Id && order.IsClosed == false, cancellationToken);

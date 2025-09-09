@@ -41,22 +41,22 @@ public class CreateBoosterApplicationValidator : AbstractValidator<CreateBooster
 public class CreateBoosterApplicationHandler : IRequestHandler<CreateBoosterApplicationCommand, BoosterApplicationDto>
 {
     private readonly IApplicationDbContext _context;
-    private readonly ICurrentUserService _currentUserService;
+    private readonly IUserContext _userContext;
     private readonly IMapper _mapper;
 
     public CreateBoosterApplicationHandler(
         IApplicationDbContext context,
-        ICurrentUserService currentUserService,
+        IUserContext userContext,
         IMapper mapper
     )
     {
         _context = context;
-        _currentUserService = currentUserService;
+        _userContext = userContext;
         _mapper = mapper;
     }
     public async Task<BoosterApplicationDto> Handle(CreateBoosterApplicationCommand request, CancellationToken cancellationToken)
     {
-        var userId = _currentUserService.UserId;
+        var userId = _userContext.UserId;
        
         
         bool hasActiveApplications = await _context.BoosterApplications.AnyAsync(application =>

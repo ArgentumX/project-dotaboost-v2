@@ -33,9 +33,12 @@ public class BoostOrderController : BaseController
     }
 
     [HttpPost("{id:guid}/close")]
-    public async Task<ActionResult<BoostOrderDto>> CloseBoostOrder(Guid id, [FromBody] CloseBoostOrderCommand command)
+    public async Task<ActionResult<BoostOrderDto>> CloseBoostOrder(Guid id)
     {
-        command.Id = id;
+        var command = new CloseBoostOrderCommand
+        {
+            Id = id
+        };
         var result = await Mediator.Send(command);
         return Ok(result);
     }

@@ -25,7 +25,7 @@ public static class DependencyInjection
         
         
         // Current User service
-        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IUserContext, UserContext>();
         services.AddHttpContextAccessor();
         
         
