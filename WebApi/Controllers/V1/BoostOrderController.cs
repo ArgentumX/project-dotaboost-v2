@@ -26,14 +26,14 @@ public class BoostOrderController : BaseController
 
 
     [HttpPost]
-    public async Task<ActionResult<int>> CreateBoostOrder([FromBody] CreateBoostOrderCommand command)
+    public async Task<ActionResult<BoostOrderDto>> CreateBoostOrder([FromBody] CreateBoostOrderCommand command)
     {
         var result = await Mediator.Send(command);
         return Ok(result);
     }
 
     [HttpPost("{id:guid}/close")]
-    public async Task<ActionResult> CloseBoostOrder(Guid id, [FromBody] CloseBoostOrderCommand command)
+    public async Task<ActionResult<BoostOrderDto>> CloseBoostOrder(Guid id, [FromBody] CloseBoostOrderCommand command)
     {
         command.Id = id;
         var result = await Mediator.Send(command);
@@ -41,7 +41,7 @@ public class BoostOrderController : BaseController
     }
     
     [HttpPatch("{id:guid}")]
-    public async Task<ActionResult> PatchBoostOrder(Guid id, [FromBody] PatchBoostOrderCommand command)
+    public async Task<ActionResult<BoostOrderDto>> PatchBoostOrder(Guid id, [FromBody] PatchBoostOrderCommand command)
     {
         command.Id = id;
         var result = await Mediator.Send(command);

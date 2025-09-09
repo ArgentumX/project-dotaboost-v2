@@ -14,6 +14,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     public DbSet<BoostOrder> BoostOrders => Set<BoostOrder>();
     public DbSet<Batch> Batches => Set<Batch>();
     public DbSet<Booster> Boosters => Set<Booster>();
+    public DbSet<BoosterApplication> BoosterApplications => Set<BoosterApplication>();
     
     protected override void OnModelCreating(ModelBuilder builder)
     {
