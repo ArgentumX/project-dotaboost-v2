@@ -5,6 +5,7 @@ using Infrastructure;
 using Infrastructure.Data;
 using WebApi;
 using WebApi.Middleware;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,19 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy<string>("fixed", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromSeconds(10),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 2
+            }));
+});
 
 var app = builder.Build();
 
@@ -65,6 +79,9 @@ app.UseCors(policy => policy
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseRateLimiter();
+
+app.MapControllers()
+    .RequireRateLimiting("fixed");
 
 app.Run();

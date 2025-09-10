@@ -1,21 +1,18 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Application;
-using Infrastructure;
-using Infrastructure.Data;
-using Infrastructure.Identity; // где определён ApplicationUser
+using Asp.Versioning;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+// где определён ApplicationUser
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
-namespace WebApi.Controllers;
+namespace WebApi.Controllers.V1.Account;
 
 
-[Route("[controller]/[action]")]
+[ApiVersion(1.0)]
 public class AccountController : BaseController
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -32,7 +29,7 @@ public class AccountController : BaseController
         _configuration = configuration;
     }
 
-    [HttpPost]
+    [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto model)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -53,7 +50,7 @@ public class AccountController : BaseController
         return Ok(new { token });
     }
 
-    [HttpPost]
+    [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto model)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
