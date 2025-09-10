@@ -14,9 +14,9 @@ public class BoosterApplicationController : BaseController
     
     
     [HttpGet]
-    public async Task<ActionResult<PaginatedList<BoosterApplicationDto>>> GetBoosterApplications()
+    public async Task<ActionResult<PaginatedList<BoosterApplicationDto>>> GetBoosterApplications([FromQuery] BoosterApplicationFilter filter)
     {
-        var query = new GetBoosterApplicationsQuery();
+        var query = new GetBoosterApplicationsQuery(filter);
         var result = await Mediator.Send(query);
         return result;
     }

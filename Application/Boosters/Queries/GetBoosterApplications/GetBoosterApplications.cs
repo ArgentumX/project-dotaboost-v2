@@ -1,6 +1,7 @@
 ﻿using Application.Common.Interfaces;
 using Application.Common.Mappings;
 using Application.Common.Models;
+using AutoFilterer.Extensions;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
@@ -8,10 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Boosters.Queries.GetBoosterApplications;
 
-public class GetBoosterApplicationsQuery : IRequest<PaginatedList<BoosterApplicationDto>>
+public class GetBoosterApplicationsQuery(BoosterApplicationFilter queryFilter) : IRequest<PaginatedList<BoosterApplicationDto>>
 {
-    public int PageNumber { get; init; } = 1;
-    public int PageSize { get; init; } = 20;
+    public BoosterApplicationFilter QueryFilter { get; init; } = queryFilter;
 }
 
 public class GetBoosterApplicationsHandler 
@@ -39,9 +39,11 @@ public class GetBoosterApplicationsHandler
         if (!_userContext.IsInRole("Admin"))
             query = query.Where(app => app.UserId == _userContext.UserId);
         
+        query = query.ApplyFilterWithoutPagination(request.QueryFilter);
+        
         var result = await query
             .ProjectTo<BoosterApplicationDto>(_mapper.ConfigurationProvider)
-            .PaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
+            .PaginatedListAsync(request.QueryFilter.Page, request.QueryFilter.PerPage, cancellationToken);
 
         return result;
     }
