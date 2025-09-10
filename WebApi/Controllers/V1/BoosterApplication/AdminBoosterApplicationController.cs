@@ -1,9 +1,8 @@
 ﻿using Application.Boosters;
 using Application.Boosters.Commands.ApproveBoosterApplication;
-using Application.Boosters.Commands.CreateBoosterApplication;
 using Application.Boosters.Commands.RejectBoosterApplication;
-using Application.Boosters.Queries;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers.V1.BoosterApplication;
@@ -12,25 +11,25 @@ namespace WebApi.Controllers.V1.BoosterApplication;
 public class AdminBoosterApplicationController : BaseController
 {
     [HttpPost("{id:guid}/reject")]
-    public async Task<ActionResult<BoosterApplicationDto>> RejectBoostApplication(Guid id)
+    public async Task<Ok<BoosterApplicationDto>> RejectBoostApplication(Guid id)
     {
         var command = new RejectBoosterApplicationCommand
         {
             ApplicationId = id
         };
         var result = await Mediator.Send(command);
-        return Ok(result);
+        return TypedResults.Ok(result);
     }
 
 
     [HttpPost("{id:guid}/approve")]
-    public async Task<ActionResult<BoosterApplicationDto>> ApproveBoostApplication(Guid id)
+    public async Task<Ok<BoosterApplicationDto>> ApproveBoostApplication(Guid id)
     {
         var command = new ApproveBoosterApplicationCommand
         {
             ApplicationId = id
         };
         var result = await Mediator.Send(command);
-        return Ok(result);
+        return TypedResults.Ok(result);
     }
 }

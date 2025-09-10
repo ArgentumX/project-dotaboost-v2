@@ -6,6 +6,7 @@ using Application.Boosters.Queries.GetBoosterApplications;
 using Application.Common.Models;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace WebApi.Controllers.V1.BoosterApplication;
 
@@ -15,28 +16,28 @@ public class BoosterApplicationController : BaseController
     
     
     [HttpGet]
-    public async Task<ActionResult<PaginatedList<BoosterApplicationDto>>> GetBoosterApplications([FromQuery] BoosterApplicationFilter filter)
+    public async Task<Ok<PaginatedList<BoosterApplicationDto>>> GetBoosterApplications([FromQuery] BoosterApplicationFilter filter)
     {
         var query = new GetBoosterApplicationsQuery(filter);
         var result = await Mediator.Send(query);
-        return result;
+        return TypedResults.Ok(result);
     }
     
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<BoosterApplicationDto>> GetBoostOrderDetails(Guid id)
+    public async Task<Ok<BoosterApplicationDto>> GetBoostOrderDetails(Guid id)
     {
         var query = new GetBoosterApplicationDetailsQuery() {
             Id = id
         };
         var result = await Mediator.Send(query);
-        return Ok(result);
+        return TypedResults.Ok(result);
     }
     
     [HttpPost]
-    public async Task<ActionResult<BoosterApplicationDto>> CreateBoostOrder([FromBody] CreateBoosterApplicationCommand command)
+    public async Task<Ok<BoosterApplicationDto>> CreateBoostOrder([FromBody] CreateBoosterApplicationCommand command)
     {
         var result = await Mediator.Send(command);
-        return Ok(result);
+        return TypedResults.Ok(result);
     }
     
 }

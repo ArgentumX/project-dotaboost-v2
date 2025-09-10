@@ -8,6 +8,7 @@ using Application.Common.Models;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace WebApi.Controllers;
 
@@ -17,48 +18,48 @@ public class BoostOrderController : BaseController
 {
     [HttpGet("{id:guid}")]
     [AllowAnonymous]
-    public async Task<ActionResult<BoostOrderDto>> GetBoostOrderDetails(Guid id)
+    public async Task<Ok<BoostOrderDto>> GetBoostOrderDetails(Guid id)
     {
         var query = new GetBoostOrderDetailsQuery
         {
             Id = id
         };
         var result = await Mediator.Send(query);
-        return Ok(result);
+        return TypedResults.Ok(result);
     }
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<ActionResult<PaginatedList<BoostOrderDto>>> GetBoostOrders([FromQuery] BoostOrderFilter filter)
+    public async Task<Ok<PaginatedList<BoostOrderDto>>> GetBoostOrders([FromQuery] BoostOrderFilter filter)
     {
         var query = new GetBoosterOrdersQuery(filter);
         var result = await Mediator.Send(query);
-        return Ok(result);
+        return TypedResults.Ok(result);
     }
 
     [HttpPost]
-    public async Task<ActionResult<BoostOrderDto>> CreateBoostOrder([FromBody] CreateBoostOrderCommand command)
+    public async Task<Ok<BoostOrderDto>> CreateBoostOrder([FromBody] CreateBoostOrderCommand command)
     {
         var result = await Mediator.Send(command);
-        return Ok(result);
+        return TypedResults.Ok(result);
     }
 
     [HttpPost("{id:guid}/close")]
-    public async Task<ActionResult<BoostOrderDto>> CloseBoostOrder(Guid id)
+    public async Task<Ok<BoostOrderDto>> CloseBoostOrder(Guid id)
     {
         var command = new CloseBoostOrderCommand
         {
             Id = id
         };
         var result = await Mediator.Send(command);
-        return Ok(result);
+        return TypedResults.Ok(result);
     }
     
     [HttpPatch("{id:guid}")]
-    public async Task<ActionResult<BoostOrderDto>> PatchBoostOrder(Guid id, [FromBody] PatchBoostOrderCommand command)
+    public async Task<Ok<BoostOrderDto>> PatchBoostOrder(Guid id, [FromBody] PatchBoostOrderCommand command)
     {
         command.Id = id;
         var result = await Mediator.Send(command);
-        return Ok(result);
+        return TypedResults.Ok(result);
     }
 }
