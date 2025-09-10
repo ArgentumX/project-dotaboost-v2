@@ -6,28 +6,28 @@ using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Boosters.Queries;
+namespace Application.Boosters.Queries.GetBoosterApplicationDetails;
 
-public class GetBoosterApplicationQuery : IRequest<BoosterApplicationDto>
+public class GetBoosterApplicationDetailsQuery : IRequest<BoosterApplicationDto>
 {
     public Guid Id { get; init; }
 }
 
-public class GetBoosterApplicationHandler : IRequestHandler<GetBoosterApplicationQuery, BoosterApplicationDto>
+public class GetBoosterApplicationDetailsHandler : IRequestHandler<GetBoosterApplicationDetailsQuery, BoosterApplicationDto>
 {
     
     private readonly IMapper _mapper;
     private readonly IApplicationDbContext _context;
     private readonly IUserContext _userContext;
 
-    public GetBoosterApplicationHandler(IMapper mapper, IApplicationDbContext context, IUserContext userContext)
+    public GetBoosterApplicationDetailsHandler(IMapper mapper, IApplicationDbContext context, IUserContext userContext)
     {
         _mapper = mapper;
         _context = context;
         _userContext = userContext;
     }
     
-    public async Task<BoosterApplicationDto> Handle(GetBoosterApplicationQuery request, CancellationToken cancellationToken)
+    public async Task<BoosterApplicationDto> Handle(GetBoosterApplicationDetailsQuery request, CancellationToken cancellationToken)
     {
         var userId = _userContext.UserId;
         

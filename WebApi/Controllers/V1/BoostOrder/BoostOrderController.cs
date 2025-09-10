@@ -1,7 +1,10 @@
 ﻿using Application.BoostOrders.Commands;
 using Application.BoostOrders.Commands.DeleteBoostOrder;
 using Application.BoostOrders.Commands.PatchBoostOrder;
+using Application.BoostOrders.Queries;
+using Application.BoostOrders.Queries.GetBoosterOrders;
 using Application.BoostOrders.Queries.GetBoostOrderDetails;
+using Application.Common.Models;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +27,14 @@ public class BoostOrderController : BaseController
         return Ok(result);
     }
 
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<ActionResult<PaginatedList<BoostOrderDto>>> GetBoostOrders([FromQuery] BoostOrderFilter filter)
+    {
+        var query = new GetBoosterOrdersQuery(filter);
+        var result = await Mediator.Send(query);
+        return Ok(result);
+    }
 
     [HttpPost]
     public async Task<ActionResult<BoostOrderDto>> CreateBoostOrder([FromBody] CreateBoostOrderCommand command)

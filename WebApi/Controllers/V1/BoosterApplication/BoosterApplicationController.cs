@@ -1,6 +1,7 @@
 ﻿using Application.Boosters;
 using Application.Boosters.Commands.CreateBoosterApplication;
 using Application.Boosters.Queries;
+using Application.Boosters.Queries.GetBoosterApplicationDetails;
 using Application.Boosters.Queries.GetBoosterApplications;
 using Application.Common.Models;
 using Asp.Versioning;
@@ -24,7 +25,7 @@ public class BoosterApplicationController : BaseController
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<BoosterApplicationDto>> GetBoostOrderDetails(Guid id)
     {
-        var query = new GetBoosterApplicationQuery {
+        var query = new GetBoosterApplicationDetailsQuery() {
             Id = id
         };
         var result = await Mediator.Send(query);
