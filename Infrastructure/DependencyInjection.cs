@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.Services;
 using Infrastructure.Services;
 
 namespace Infrastructure;
@@ -26,6 +27,7 @@ public static class DependencyInjection
         
         // Current User service
         services.AddScoped<IUserContext, UserContext>();
+        services.AddScoped<ITokenService, TokenService>();
         services.AddHttpContextAccessor();
         
         

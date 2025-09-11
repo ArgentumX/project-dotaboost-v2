@@ -1,6 +1,8 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Application.Users;
+using Application.Users.GenerateJwtToken;
 using Asp.Versioning;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -40,14 +42,22 @@ public class AccountController : BaseController
             Email = model.Email,
         };
 
-        var result = await _userManager.CreateAsync(user, model.Password);
-        if (!result.Succeeded)
+        var userResult = await _userManager.CreateAsync(user, model.Password);
+        if (!userResult.Succeeded)
         {
-            return BadRequest(result.Errors);
+            return BadRequest(userResult.Errors);
         }
-        
-        var token = await GenerateJwtToken(user);
-        return Ok(new { token });
+
+        var userDto = new UserDto()
+        {
+            Id = Guid.Parse(user.Id),
+            Email = user.Email,
+            Roles = await _userManager.GetRolesAsync(user),
+            Claims = await _userManager.GetClaimsAsync(user)
+        };
+        var command = new GenerateJwtTokenCommand(userDto);
+        var result = await Mediator.Send(command);
+        return Ok(result);
     }
 
     [HttpPost("login")]
@@ -58,50 +68,19 @@ public class AccountController : BaseController
         var user = await _userManager.FindByEmailAsync(model.Email);
         if (user == null) return Unauthorized("Invalid credentials");
 
-        var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
-        if (!result.Succeeded) return Unauthorized("Invalid credentials");
+        var userResult = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+        if (!userResult.Succeeded) return Unauthorized("Invalid credentials");
 
-        var token = await GenerateJwtToken(user);
-        return Ok(new { token });
-    }
-
-    private async Task<string> GenerateJwtToken(ApplicationUser user)
-    {
-        var jwtSection = _configuration.GetSection("Jwt");
-        var key = Encoding.UTF8.GetBytes(jwtSection.GetValue<string>("Key"));
-        var issuer = jwtSection.GetValue<string>("Issuer");
-        var audience = jwtSection.GetValue<string>("Audience");
-        var expireMinutes = jwtSection.GetValue<int>("ExpireMinutes");
-
-        var userClaims = await _userManager.GetClaimsAsync(user);
-        var roles = await _userManager.GetRolesAsync(user);
-
-        var claims = new List<Claim>
+        var userDto = new UserDto()
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            Id = Guid.Parse(user.Id),
+            Email = user.Email,
+            Roles = await _userManager.GetRolesAsync(user),
+            Claims = await _userManager.GetClaimsAsync(user)
         };
-        
-        foreach (var role in roles)
-        {
-            claims.Add(new Claim(ClaimTypes.Role, role));
-        }
-        
-        claims.AddRange(userClaims);
-
-        var signingKey = new SymmetricSecurityKey(key);
-        var creds = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken(
-            issuer: issuer,
-            audience: audience,
-            claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(expireMinutes),
-            signingCredentials: creds
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        var command = new GenerateJwtTokenCommand(userDto);
+        var result = await Mediator.Send(command);
+        return Ok(result);
     }
 }
 

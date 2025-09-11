@@ -1,4 +1,5 @@
 ﻿using Application.BoostOrders.Queries.GetBoostOrderDetails;
+using Application.Common.Interfaces.Services;
 using AutoMapper;
 
 namespace Application.BoostOrders.Commands.PatchBoostOrder;
