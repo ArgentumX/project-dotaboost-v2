@@ -70,7 +70,7 @@ public class CreateBatchHandler : IRequestHandler<CreateBatchCommand, BatchDto>
             Screen = request.Screen,
             ReceivedMmr = request.ReceivedMmr,
             IsWin = request.IsWin,
-            BoostOrderId = request.OrderId,
+            OrderId = request.OrderId,
             BoosterId = booster.Id
         };
         

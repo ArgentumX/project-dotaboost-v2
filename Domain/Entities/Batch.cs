@@ -8,8 +8,8 @@ public class Batch : BaseAuditableEntity
     public int ReceivedMmr { get; set; }
     public bool IsWin { get; set; }
     
-    public Guid BoostOrderId { get; set; }
-    public BoostOrder BoostOrder { get; set; } = null!;
+    public Guid OrderId { get; set; }
+    public BoostOrder Order { get; set; } = null!;
     
     public Guid BoosterId { get; set; }
     public Booster Booster { get; set; } = null!;
