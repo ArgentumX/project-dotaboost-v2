@@ -1,5 +1,7 @@
 ﻿using Domain.Common;
 using Domain.Common.Enum;
+using Domain.Events;
+using Domain.Exceptions;
 
 namespace Domain.Entities;
 
@@ -11,4 +13,21 @@ public class BoosterApplication : BaseAuditableEntity
     public string Contact { get; set; } = String.Empty;
     public string SteamAccountLink { get; set; } = String.Empty;
     public string? ReviewComment { get; set; }
+
+ 
+    public void Approve()
+    {
+        if (Status != ApplicationStatus.Pending)
+            throw new DomainException("Application must be in Pending status");
+        Status = ApplicationStatus.Approved;
+        AddDomainEvent(new ApproveBoosterEvent(this));
+    }
+
+    public void Reject()
+    {
+        if (Status != ApplicationStatus.Pending)
+            throw new DomainException("Application must be in Pending status");
+        Status = ApplicationStatus.Rejected;
+        AddDomainEvent(new RejectBoosterEvent(this));
+    }
 }

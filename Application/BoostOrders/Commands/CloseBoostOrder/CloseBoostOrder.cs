@@ -15,13 +15,6 @@ public class CloseBoostOrderCommand : IRequest<BoostOrderDto>
     public Guid? Id { get; set; }
 }
 
-public class CloseBoostOrderCommandValidator : AbstractValidator<CloseBoostOrderCommand>
-{
-    public CloseBoostOrderCommandValidator() {
-    }
-}
-
-
 
 public class CloseBoostOrderHandler : IRequestHandler<CloseBoostOrderCommand, BoostOrderDto>
 {

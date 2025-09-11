@@ -16,14 +16,14 @@ public class CreateBatchCommand : IRequest<BatchDto>
     public string Screen { get; set; } = null!;
     public int ReceivedMmr { get; set; }
     public bool IsWin { get; set; }
-    public Guid BoostOrderId { get; set; }
+    public Guid OrderId { get; set; }
 }
 
 public class CreateBatchValidator : AbstractValidator<CreateBatchCommand>
 {
     public CreateBatchValidator()
     {
-        RuleFor(x => x.BoostOrderId)
+        RuleFor(x => x.OrderId)
             .NotEmpty();
         
         RuleFor(x => x.IsWin)
@@ -56,10 +56,13 @@ public class CreateBatchHandler : IRequestHandler<CreateBatchCommand, BatchDto>
         var userId = _userContext.UserId;
         
         var booster = await _context.Boosters.FirstOrDefaultAsync(x =>
-            x.OrderId != null && x.UserId == userId && x.OrderId == request.BoostOrderId);
+            x.UserId == userId);
         
         if (booster == null)
-            throw new NotFoundException(nameof(BoostOrder), request.BoostOrderId);
+            throw new NotFoundException(nameof(Booster), userId);
+        
+        if (booster.OrderId != request.OrderId)
+            throw new BadRequestException("Order id does not match");
         
         
         var entity = new Batch
@@ -67,7 +70,7 @@ public class CreateBatchHandler : IRequestHandler<CreateBatchCommand, BatchDto>
             Screen = request.Screen,
             ReceivedMmr = request.ReceivedMmr,
             IsWin = request.IsWin,
-            BoostOrderId = request.BoostOrderId,
+            BoostOrderId = request.OrderId,
             BoosterId = booster.Id
         };
         

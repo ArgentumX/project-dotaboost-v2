@@ -4,6 +4,7 @@ using Application.Common.Interfaces.Services;
 using AutoMapper;
 using Domain.Common.Enum;
 using Domain.Entities;
+using Domain.Events;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -15,15 +16,6 @@ public class ApproveBoosterApplicationCommand : IRequest<BoosterApplicationDto>
 {
     public Guid? ApplicationId { get; set; }
 }
-
-
-public class ApproveBoosterApplicationValidator : AbstractValidator<ApproveBoosterApplicationCommand>
-{
-    public ApproveBoosterApplicationValidator()
-    {
-    }
-}
-
 
 public class ApproveBoosterApplicationHandler : IRequestHandler<ApproveBoosterApplicationCommand, BoosterApplicationDto>
 {
@@ -51,11 +43,8 @@ public class ApproveBoosterApplicationHandler : IRequestHandler<ApproveBoosterAp
         if (entity == null)
             throw new NotFoundException(nameof(BoosterApplication), request.ApplicationId ?? Guid.Empty);
         
-        if (entity.Status != ApplicationStatus.Pending)
-            throw new BadRequestException("Application status is wrong");
 
-        
-        entity.Status = ApplicationStatus.Approved;
+        entity.Approve();
         await _context.SaveChangesAsync(cancellationToken);
         
         var result = _mapper.Map<BoosterApplicationDto>(entity);

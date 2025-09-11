@@ -9,7 +9,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Services;
+using Infrastructure.Data.Interceptors;
 using Infrastructure.Services;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Infrastructure;
 
@@ -17,11 +19,19 @@ public static class DependencyInjection
 {
     public static void AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
+        
+        // interceptors
+        services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
+        services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+        
+        
         var connectionString = configuration.GetConnectionString("DefaultConnection");
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
+            options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
             options.UseSqlite(connectionString);
         });
+        
         services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
         
         
