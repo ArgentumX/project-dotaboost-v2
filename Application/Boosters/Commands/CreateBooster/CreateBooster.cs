@@ -1,4 +1,5 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Commands;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Services;
 using AutoMapper;
@@ -10,15 +11,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Boosters.Commands.CreateBooster;
 
-public class CreateBoosterCommand : IRequest<BoosterDto>
+public class CreateBoosterCommand : ActorCommand<BoosterDto>
 {
-    public Guid UserId { get; set; }
 }
 
 public class CreateBoosterValidator : AbstractValidator<CreateBoosterCommand>
 {
     public CreateBoosterValidator()
     {
+        RuleFor(x => x.ActorId).NotEmpty();
     }
 }
 
@@ -37,14 +38,14 @@ public class CreateBoosterHandler : IRequestHandler<CreateBoosterCommand, Booste
         _mapper = mapper;
     }
     public async Task<BoosterDto> Handle(CreateBoosterCommand request, CancellationToken cancellationToken)
-    { ;
-        var isBooster = _context.Boosters.Any(x => x.UserId == request.UserId);
+    {
+        var isBooster = _context.Boosters.Any(x => x.UserId == request.ActorId);
         if (isBooster)
             throw new BadRequestException("Already booster");
-
+          
         var entity = new Booster
         {
-            UserId = request.UserId,
+            UserId = (Guid)request.ActorId!,
         };
         
         await _context.Boosters.AddAsync(entity, cancellationToken);

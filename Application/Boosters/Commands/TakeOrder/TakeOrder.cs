@@ -1,4 +1,5 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Commands;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using AutoMapper;
 using MediatR;
@@ -6,9 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Boosters.Commands.TakeOrder;
 
-public class TakeOrderCommand : IRequest<BoosterDto>
+public class TakeOrderCommand : ActorCommand<BoosterDto>
 {
-    public Guid UserId { get; set; }
     public Guid OrderId { get; set; }
 }
 
@@ -27,7 +27,7 @@ public class TakeOrderHandler : IRequestHandler<TakeOrderCommand, BoosterDto>
     }
     public async Task<BoosterDto> Handle(TakeOrderCommand request, CancellationToken cancellationToken)
     { 
-        var booster = await _context.Boosters.FirstOrDefaultAsync(x => x.UserId == request.UserId, cancellationToken);
+        var booster = await _context.Boosters.FirstOrDefaultAsync(x => x.UserId == request.ActorId, cancellationToken);
         if (booster == null)
             throw new BadRequestException("Not a booster!");
         

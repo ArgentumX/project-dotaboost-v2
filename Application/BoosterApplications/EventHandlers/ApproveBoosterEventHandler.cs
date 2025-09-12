@@ -24,7 +24,7 @@ public class ApproveBoosterEventHandler : INotificationHandler<ApproveBoosterEve
     {
         var command = new CreateBoosterCommand()
         {
-            UserId = notification.Application.UserId,
+            ActorId = notification.Application.UserId,
         };
         var result = await _mediator.Send(command);
         return result;

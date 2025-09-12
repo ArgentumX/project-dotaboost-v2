@@ -44,12 +44,8 @@ public class CloseBoostOrderHandler : IRequestHandler<CloseBoostOrderCommand, Bo
         
         if (entity == null || entity.UserId != userId)
             throw new NotFoundException(nameof(BoostOrder), request.Id);
-
-        if (entity.Booster != null)
-            throw new BadRequestException("It is not possible to close orders with active boosters");
         
-        entity.IsClosed = true;
-        
+        entity.Close();
         await _context.SaveChangesAsync(cancellationToken);
         
         var result = _mapper.Map<BoostOrderDto>(entity);

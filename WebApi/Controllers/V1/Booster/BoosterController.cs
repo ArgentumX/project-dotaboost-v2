@@ -15,7 +15,7 @@ public class BoosterController : BaseController
     {
         var command = new TakeOrderCommand()
         {
-            UserId = UserId,
+            ActorId = UserId,
             OrderId = dto.OrderId
         };
         var result = await Mediator.Send(command);

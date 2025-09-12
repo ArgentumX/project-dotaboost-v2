@@ -1,4 +1,5 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Commands;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using AutoMapper;
 using MediatR;
@@ -6,9 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Boosters.Commands.RefuseOrder;
 
-public class RefuseOrderCommand : IRequest<BoosterDto>
+public class RefuseOrderCommand : ActorCommand<BoosterDto>
 {
-    public Guid UserId { get; set; }
 }
 
 public class RefuseOrderHandler : IRequestHandler<RefuseOrderCommand, BoosterDto>
@@ -26,7 +26,7 @@ public class RefuseOrderHandler : IRequestHandler<RefuseOrderCommand, BoosterDto
     }
     public async Task<BoosterDto> Handle(RefuseOrderCommand request, CancellationToken cancellationToken)
     { 
-        var booster = await _context.Boosters.FirstOrDefaultAsync(x => x.UserId == request.UserId, cancellationToken);
+        var booster = await _context.Boosters.FirstOrDefaultAsync(x => x.UserId == request.ActorId, cancellationToken);
         if (booster == null)
             throw new BadRequestException("Not a booster!");
         
