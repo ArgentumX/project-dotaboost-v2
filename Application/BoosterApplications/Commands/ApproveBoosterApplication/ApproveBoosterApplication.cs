@@ -21,17 +21,14 @@ public class ApproveBoosterApplicationCommand : IRequest<BoosterApplicationDto>
 public class ApproveBoosterApplicationHandler : IRequestHandler<ApproveBoosterApplicationCommand, BoosterApplicationDto>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IUserContext _userContext;
     private readonly IMapper _mapper;
 
     public ApproveBoosterApplicationHandler(
         IApplicationDbContext context,
-        IUserContext userContext,
         IMapper mapper
     )
     {
         _context = context;
-        _userContext = userContext;
         _mapper = mapper;
     }
     public async Task<BoosterApplicationDto> Handle(ApproveBoosterApplicationCommand request, CancellationToken cancellationToken)

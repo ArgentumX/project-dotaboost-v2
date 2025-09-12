@@ -1,4 +1,5 @@
 ﻿using Application.BoostOrders.Queries.GetBoostOrderDetails;
+using Application.Common.Commands;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Services;
@@ -10,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.BoostOrders.Commands;
 
-public class CreateBoostOrderCommand : IRequest<BoostOrderDto>
+public class CreateBoostOrderCommand : ActorCommand<BoostOrderDto>
 {
     public string? Description { get; set; }
     public bool IsParty { get; set; } = true;
@@ -38,26 +39,20 @@ public class CreateBoostOrderCommandValidator : AbstractValidator<CreateBoostOrd
 public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, BoostOrderDto>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IUserContext _userContext;
     private readonly IMapper _mapper;
 
     public CreateBoostOrderHandler(
         IApplicationDbContext context,
-        IUserContext userContext,
         IMapper mapper
     )
     {
         _context = context;
-        _userContext = userContext;
         _mapper = mapper;
     }
     public async Task<BoostOrderDto> Handle(CreateBoostOrderCommand request, CancellationToken cancellationToken)
     {
-        var userId = _userContext.UserId;
-       
-        
         bool hasActiveOrder = await _context.BoostOrders.AnyAsync(o =>
-                o.UserId == userId &&
+                o.UserId == request.ActorId &&
                 o.IsClosed == false,
             cancellationToken
         );
@@ -75,7 +70,7 @@ public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, 
             StartRating =  request.StartRating,
             CurrentRating =  request.StartRating,
             RequiredRating =  request.RequiredRating,
-            UserId = userId, 
+            UserId = (Guid)request.ActorId!, 
         };
         await _context.BoostOrders.AddAsync(entity, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);

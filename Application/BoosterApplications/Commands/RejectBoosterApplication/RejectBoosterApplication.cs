@@ -28,17 +28,14 @@ public class RejectBoosterApplicationValidator : AbstractValidator<RejectBooster
 public class RejectBoosterApplicationHandler : IRequestHandler<RejectBoosterApplicationCommand, BoosterApplicationDto>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IUserContext _userContext;
     private readonly IMapper _mapper;
 
     public RejectBoosterApplicationHandler(
         IApplicationDbContext context,
-        IUserContext userContext,
         IMapper mapper
     )
     {
         _context = context;
-        _userContext = userContext;
         _mapper = mapper;
     }
     public async Task<BoosterApplicationDto> Handle(RejectBoosterApplicationCommand request, CancellationToken cancellationToken)

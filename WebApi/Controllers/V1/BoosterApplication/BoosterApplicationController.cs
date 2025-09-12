@@ -1,6 +1,6 @@
 ﻿using Application.BoosterApplications;
+using Application.BoosterApplications.Commands.CreateBoosterApplication;
 using Application.Boosters;
-using Application.Boosters.Commands.CreateBoosterApplication;
 using Application.Boosters.Queries;
 using Application.Boosters.Queries.GetBoosterApplicationDetails;
 using Application.Boosters.Queries.GetBoosterApplications;

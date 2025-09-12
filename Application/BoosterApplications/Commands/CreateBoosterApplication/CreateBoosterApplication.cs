@@ -1,8 +1,6 @@
-﻿using Application.BoosterApplications;
-using Application.BoostOrders.Queries.GetBoostOrderDetails;
+﻿using Application.Common.Commands;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
-using Application.Common.Interfaces.Services;
 using AutoMapper;
 using Domain.Common.Enum;
 using Domain.Entities;
@@ -10,9 +8,9 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Boosters.Commands.CreateBoosterApplication;
+namespace Application.BoosterApplications.Commands.CreateBoosterApplication;
 
-public class CreateBoosterApplicationCommand : IRequest<BoosterApplicationDto>
+public class CreateBoosterApplicationCommand : ActorCommand<BoosterApplicationDto>
 {
     public string Motivation { get; set; } = String.Empty;
     public string Contact { get; set; } = String.Empty;
@@ -43,26 +41,22 @@ public class CreateBoosterApplicationValidator : AbstractValidator<CreateBooster
 public class CreateBoosterApplicationHandler : IRequestHandler<CreateBoosterApplicationCommand, BoosterApplicationDto>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IUserContext _userContext;
     private readonly IMapper _mapper;
 
     public CreateBoosterApplicationHandler(
         IApplicationDbContext context,
-        IUserContext userContext,
         IMapper mapper
     )
     {
         _context = context;
-        _userContext = userContext;
         _mapper = mapper;
     }
     public async Task<BoosterApplicationDto> Handle(CreateBoosterApplicationCommand request, CancellationToken cancellationToken)
     {
-        var userId = _userContext.UserId;
        
         
         bool hasActiveApplications = await _context.BoosterApplications.AnyAsync(application =>
-                application.UserId == userId &&
+                application.UserId == request.ActorId &&
                 application.Status == ApplicationStatus.Pending,
             cancellationToken
         );
@@ -75,7 +69,7 @@ public class CreateBoosterApplicationHandler : IRequestHandler<CreateBoosterAppl
             Motivation = request.Motivation,    
             Contact = request.Contact,
             SteamAccountLink = request.SteamAccountLink,
-            UserId = userId
+            UserId = (Guid)request.ActorId!
         };
         
         await _context.BoosterApplications.AddAsync(entity, cancellationToken);
