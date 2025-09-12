@@ -1,4 +1,5 @@
-﻿using Application.Boosters;
+﻿using Application.BoosterApplications;
+using Application.Boosters;
 using Application.Boosters.Commands.ApproveBoosterApplication;
 using Application.Boosters.Commands.RejectBoosterApplication;
 using Asp.Versioning;

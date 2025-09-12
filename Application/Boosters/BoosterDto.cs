@@ -1,11 +1,11 @@
-﻿using AutoMapper;
+﻿using Application.Common.Dtos;
+using AutoMapper;
 using Domain.Entities;
 
 namespace Application.Boosters;
 
-public class BoosterDto
+public class BoosterDto : AuditableEntityDto
 {
-    public Guid Id { get; init; }
     public Guid UserId { get; init; }
     public Guid? OrderId { get; init; }
     
@@ -14,7 +14,6 @@ public class BoosterDto
         public Mapping()
         {
             CreateMap<Booster, BoosterDto>();
-            CreateMap<BoosterDto, Booster>();
         }
     }
 }

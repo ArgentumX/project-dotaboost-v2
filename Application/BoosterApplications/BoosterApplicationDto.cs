@@ -1,12 +1,12 @@
-﻿using AutoMapper;
+﻿using Application.Common.Dtos;
+using AutoMapper;
 using Domain.Common.Enum;
 using Domain.Entities;
 
-namespace Application.Boosters;
+namespace Application.BoosterApplications;
 
-public class BoosterApplicationDto
+public class BoosterApplicationDto : AuditableEntityDto
 {
-    public Guid Id { get; init; }
     public Guid UserId { get; init; }
     public string Motivation { get; init; } = null!;
     public ApplicationStatus Status { get; init; }
@@ -19,7 +19,6 @@ public class BoosterApplicationDto
         public Mapping()
         {
             CreateMap<BoosterApplication, BoosterApplicationDto>();
-            CreateMap<BoosterApplicationDto, BoosterApplication>();
         }
     }
 }

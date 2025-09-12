@@ -1,4 +1,5 @@
-﻿using Application.BoostOrders.Queries.GetBoostOrderDetails;
+﻿using Application.BoosterApplications;
+using Application.BoostOrders.Queries.GetBoostOrderDetails;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Services;

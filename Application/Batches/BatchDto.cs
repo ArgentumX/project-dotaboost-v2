@@ -1,11 +1,11 @@
-﻿using AutoMapper;
+﻿using Application.Common.Dtos;
+using AutoMapper;
 using Domain.Entities;
 
 namespace Application.Batches;
 
-public class BatchDto
+public class BatchDto : AuditableEntityDto
 {
-    public Guid Id { get; init; }
     public string Screen { get; init; }  = null!;
     public int ReceivedMmr { get; init; }
     public bool IsWin { get; init; }
@@ -17,7 +17,6 @@ public class BatchDto
         public Mapping()
         {
             CreateMap<Batch, BatchDto>();
-            CreateMap<BatchDto, Batch>();
         }
     }
 }

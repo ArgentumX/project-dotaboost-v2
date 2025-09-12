@@ -1,4 +1,5 @@
-﻿using Application.Boosters;
+﻿using Application.BoosterApplications;
+using Application.Boosters;
 using Application.Boosters.Commands.CreateBoosterApplication;
 using Application.Boosters.Queries;
 using Application.Boosters.Queries.GetBoosterApplicationDetails;

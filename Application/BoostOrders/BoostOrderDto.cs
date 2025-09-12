@@ -1,11 +1,11 @@
-﻿using AutoMapper;
+﻿using Application.Common.Dtos;
+using AutoMapper;
 using Domain.Entities;
 
-namespace Application.BoostOrders.Queries.GetBoostOrderDetails;
+namespace Application.BoostOrders;
 
-public class BoostOrderDto
+public class BoostOrderDto : AuditableEntityDto
 {
-    public Guid Id { get; init; }
     public string? Description { get; init; }
     public bool IsParty { get; init; }
     public bool IsPriority { get; init; }
@@ -24,7 +24,6 @@ public class BoostOrderDto
         public Mapping()
         {
             CreateMap<BoostOrder, BoostOrderDto>();
-            CreateMap<BoostOrderDto, BoostOrder>();
         }
     }
 }
