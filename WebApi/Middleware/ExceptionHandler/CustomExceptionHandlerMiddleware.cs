@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 using Application.Common.Exceptions;
+using Domain.Exceptions;
 using FluentValidation;
 
 namespace WebApi.Middleware;
@@ -47,6 +48,10 @@ public class CustomExceptionHandlerMiddleware
             case BadRequestException badRequestException:
                 code = HttpStatusCode.BadRequest;
                 result = new { message = badRequestException.Message };
+                break;
+            case DomainException domainException:
+                code = HttpStatusCode.BadRequest;
+                result = new { message = domainException.Message };
                 break;
             default:
                 _logger.LogError($"Unhandled exception: {exception.Message}");
