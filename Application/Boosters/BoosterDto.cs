@@ -5,6 +5,7 @@ namespace Application.Boosters;
 
 public class BoosterDto
 {
+    public Guid Id { get; init; }
     public Guid UserId { get; init; }
     public Guid? OrderId { get; init; }
     
