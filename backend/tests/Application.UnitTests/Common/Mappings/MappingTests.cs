@@ -4,7 +4,6 @@ using Application.Batches;
 using Application.BoosterApplications;
 using Application.Boosters;
 using Application.BoostOrders;
-using Application.BoostOrders.Queries.GetBoostOrderDetails;
 using Application.Common.Interfaces;
 using AutoMapper;
 using Domain.Entities;
