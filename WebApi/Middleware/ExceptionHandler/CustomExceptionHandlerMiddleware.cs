@@ -22,7 +22,7 @@ public class CustomExceptionHandlerMiddleware
         try
         {
             await _next(context);
-        }  
+        }
         catch (Exception exception)
         {
             await HandleExceptionAsync(context, exception);
@@ -57,9 +57,9 @@ public class CustomExceptionHandlerMiddleware
                 _logger.LogError($"Unhandled exception: {exception.Message}");
                 break;
         }
-        
+
         context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int) code;
+        context.Response.StatusCode = (int)code;
         await context.Response.WriteAsync(JsonSerializer.Serialize(result));
     }
 }

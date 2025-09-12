@@ -10,11 +10,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.BoosterApplications.Commands.CreateBoosterApplication;
 
-public class CreateBoosterApplicationCommand : ActorCommand<BoosterApplicationDto>
+public class CreateBoosterApplicationCommand : SenderRequiredRequest<BoosterApplicationDto>
 {
-    public string Motivation { get; set; } = String.Empty;
-    public string Contact { get; set; } = String.Empty;
-    public string SteamAccountLink { get; set; } = String.Empty;
+    public string Motivation { get; set; } = string.Empty;
+    public string Contact { get; set; } = string.Empty;
+    public string SteamAccountLink { get; set; } = string.Empty;
 }
 
 public class CreateBoosterApplicationValidator : AbstractValidator<CreateBoosterApplicationCommand>
@@ -37,7 +37,6 @@ public class CreateBoosterApplicationValidator : AbstractValidator<CreateBooster
     }
 }
 
-
 public class CreateBoosterApplicationHandler : IRequestHandler<CreateBoosterApplicationCommand, BoosterApplicationDto>
 {
     private readonly IApplicationDbContext _context;
@@ -51,27 +50,27 @@ public class CreateBoosterApplicationHandler : IRequestHandler<CreateBoosterAppl
         _context = context;
         _mapper = mapper;
     }
-    public async Task<BoosterApplicationDto> Handle(CreateBoosterApplicationCommand request, CancellationToken cancellationToken)
+
+    public async Task<BoosterApplicationDto> Handle(CreateBoosterApplicationCommand request,
+        CancellationToken cancellationToken)
     {
-       
-        
-        bool hasActiveApplications = await _context.BoosterApplications.AnyAsync(application =>
-                application.UserId == request.ActorId &&
+        var hasActiveApplications = await _context.BoosterApplications.AnyAsync(application =>
+                application.UserId == request.SenderId &&
                 application.Status == ApplicationStatus.Pending,
             cancellationToken
         );
-        
+
         if (hasActiveApplications)
             throw new BadRequestException("You cannot create new application with other active applications");
-        
+
         var entity = new BoosterApplication
         {
-            Motivation = request.Motivation,    
+            Motivation = request.Motivation,
             Contact = request.Contact,
             SteamAccountLink = request.SteamAccountLink,
-            UserId = (Guid)request.ActorId!
+            UserId = (Guid)request.SenderId!
         };
-        
+
         await _context.BoosterApplications.AddAsync(entity, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         var result = _mapper.Map<BoosterApplicationDto>(entity);

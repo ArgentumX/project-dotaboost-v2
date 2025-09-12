@@ -16,7 +16,6 @@ public class GetBoosterDetailsQuery : IRequest<BoosterDto>
 
 public class GetBoosterDetailsHandler : IRequestHandler<GetBoosterDetailsQuery, BoosterDto>
 {
-    
     private readonly IMapper _mapper;
     private readonly IApplicationDbContext _context;
 
@@ -25,7 +24,7 @@ public class GetBoosterDetailsHandler : IRequestHandler<GetBoosterDetailsQuery, 
         _mapper = mapper;
         _context = context;
     }
-    
+
     public async Task<BoosterDto> Handle(GetBoosterDetailsQuery request, CancellationToken cancellationToken)
     {
         var query = _context.BoosterApplications.AsQueryable();
@@ -35,7 +34,7 @@ public class GetBoosterDetailsHandler : IRequestHandler<GetBoosterDetailsQuery, 
             .FirstOrDefaultAsync(cancellationToken);
         if (entity == null)
             throw new NotFoundException(nameof(BoosterApplication), request.Id);
-        
+
         return entity;
     }
 }

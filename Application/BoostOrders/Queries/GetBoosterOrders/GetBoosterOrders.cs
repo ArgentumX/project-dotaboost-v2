@@ -14,14 +14,14 @@ public class GetBoosterOrdersQuery(BoostOrderFilter queryFilter) : IRequest<Pagi
     public BoostOrderFilter QueryFilter { get; init; } = queryFilter;
 }
 
-public class GetBoosterOrdersHandler 
+public class GetBoosterOrdersHandler
     : IRequestHandler<GetBoosterOrdersQuery, PaginatedList<BoostOrderDto>>
 {
     private readonly IMapper _mapper;
     private readonly IApplicationDbContext _context;
 
     public GetBoosterOrdersHandler(
-        IMapper mapper, 
+        IMapper mapper,
         IApplicationDbContext context)
     {
         _mapper = mapper;
@@ -29,7 +29,7 @@ public class GetBoosterOrdersHandler
     }
 
     public async Task<PaginatedList<BoostOrderDto>> Handle(
-        GetBoosterOrdersQuery request, 
+        GetBoosterOrdersQuery request,
         CancellationToken cancellationToken)
     {
         var query = _context.BoostOrders.AsQueryable();

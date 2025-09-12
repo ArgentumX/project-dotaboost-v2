@@ -16,8 +16,8 @@ public class TokenService : ITokenService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IConfiguration _configuration;
-    
-    public TokenService(        
+
+    public TokenService(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         IConfiguration configuration)
@@ -26,7 +26,7 @@ public class TokenService : ITokenService
         _signInManager = signInManager;
         _configuration = configuration;
     }
-    
+
     public async Task<string> GenerateJwtToken(UserDto user)
     {
         var jwtSection = _configuration.GetSection("Jwt");
@@ -37,26 +37,23 @@ public class TokenService : ITokenService
 
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
-        
-        
-        foreach (var role in user.Roles)
-        {
-            claims.Add(new Claim(ClaimTypes.Role, role));
-        }
-        
+
+
+        foreach (var role in user.Roles) claims.Add(new Claim(ClaimTypes.Role, role));
+
         claims.AddRange(user.Claims);
 
         var signingKey = new SymmetricSecurityKey(key);
         var creds = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
-            issuer: issuer,
-            audience: audience,
-            claims: claims,
+            issuer,
+            audience,
+            claims,
             expires: DateTime.UtcNow.AddMinutes(expireMinutes),
             signingCredentials: creds
         );

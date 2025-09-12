@@ -31,20 +31,22 @@ public class ApproveBoosterApplicationHandler : IRequestHandler<ApproveBoosterAp
         _context = context;
         _mapper = mapper;
     }
-    public async Task<BoosterApplicationDto> Handle(ApproveBoosterApplicationCommand request, CancellationToken cancellationToken)
+
+    public async Task<BoosterApplicationDto> Handle(ApproveBoosterApplicationCommand request,
+        CancellationToken cancellationToken)
     {
         var entity = await _context.BoosterApplications.FirstOrDefaultAsync(application =>
                 application.Id == request.ApplicationId,
             cancellationToken
         );
-        
+
         if (entity == null)
             throw new NotFoundException(nameof(BoosterApplication), request.ApplicationId ?? Guid.Empty);
-        
+
 
         entity.Approve();
         await _context.SaveChangesAsync(cancellationToken);
-        
+
         var result = _mapper.Map<BoosterApplicationDto>(entity);
         return result;
     }

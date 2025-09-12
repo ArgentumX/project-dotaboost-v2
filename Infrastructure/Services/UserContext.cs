@@ -15,7 +15,7 @@ public class UserContext : IUserContext
         _httpContextAccessor = httpContextAccessor;
     }
 
-    private ClaimsPrincipal User => _httpContextAccessor.HttpContext?.User 
+    private ClaimsPrincipal User => _httpContextAccessor.HttpContext?.User
                                     ?? throw new InvalidOperationException("No user context available");
 
     public Guid UserId
@@ -31,7 +31,11 @@ public class UserContext : IUserContext
 
     public string? UserEmail => User.FindFirst(ClaimTypes.Email)?.Value;
 
-    public bool IsInRole(string role) => User.IsInRole(role);
+    public bool IsInRole(string role)
+    {
+        return User.IsInRole(role);
+    }
+
     public IEnumerable<Claim> GetClaims()
     {
         return User.Claims;
@@ -46,7 +50,7 @@ public class UserContext : IUserContext
 
     public UserDto GetUserDto()
     {
-        return new UserDto()
+        return new UserDto
         {
             Id = UserId,
             Email = UserEmail,

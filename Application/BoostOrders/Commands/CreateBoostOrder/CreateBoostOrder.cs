@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.BoostOrders.Commands;
 
-public class CreateBoostOrderCommand : ActorCommand<BoostOrderDto>
+public class CreateBoostOrderCommand : SenderRequiredRequest<BoostOrderDto>
 {
     public string? Description { get; set; }
     public bool IsParty { get; set; } = true;
@@ -35,7 +35,6 @@ public class CreateBoostOrderCommandValidator : AbstractValidator<CreateBoostOrd
     }
 }
 
-
 public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, BoostOrderDto>
 {
     private readonly IApplicationDbContext _context;
@@ -49,17 +48,18 @@ public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, 
         _context = context;
         _mapper = mapper;
     }
+
     public async Task<BoostOrderDto> Handle(CreateBoostOrderCommand request, CancellationToken cancellationToken)
     {
-        bool hasActiveOrder = await _context.BoostOrders.AnyAsync(o =>
-                o.UserId == request.ActorId &&
+        var hasActiveOrder = await _context.BoostOrders.AnyAsync(o =>
+                o.UserId == request.SenderId &&
                 o.IsClosed == false,
             cancellationToken
         );
-        
+
         if (hasActiveOrder)
             throw new BadRequestException("You cannot create new order with other active order");
-        
+
         var entity = new BoostOrder
         {
             Description = request.Description,
@@ -67,10 +67,10 @@ public class CreateBoostOrderHandler : IRequestHandler<CreateBoostOrderCommand, 
             IsPriority = request.IsPriority,
             SteamUsername = request.SteamUsername,
             SteamPassword = request.SteamPassword,
-            StartRating =  request.StartRating,
-            CurrentRating =  request.StartRating,
-            RequiredRating =  request.RequiredRating,
-            UserId = (Guid)request.ActorId!, 
+            StartRating = request.StartRating,
+            CurrentRating = request.StartRating,
+            RequiredRating = request.RequiredRating,
+            UserId = (Guid)request.SenderId!
         };
         await _context.BoostOrders.AddAsync(entity, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);

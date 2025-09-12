@@ -13,7 +13,7 @@ public class BoosterApplicationDto : AuditableEntityDto
     public string Contact { get; init; } = null!;
     public string SteamAccountLink { get; init; } = null!;
     public string? ReviewComment { get; init; }
-    
+
     private class Mapping : Profile
     {
         public Mapping()

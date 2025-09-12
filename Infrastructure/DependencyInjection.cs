@@ -19,28 +19,27 @@ public static class DependencyInjection
 {
     public static void AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        
         // interceptors
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
-        
-        
+
+
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
             options.UseSqlite(connectionString);
         });
-        
+
         services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
-        
-        
+
+
         // Current User service
         services.AddScoped<IUserContext, UserContext>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddHttpContextAccessor();
-        
-        
+
+
         // Use full Identity (users + roles + token providers)
         services
             .AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -52,7 +51,7 @@ public static class DependencyInjection
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
-        
+
         // JWT configuration
         var jwtSection = configuration.GetSection("Jwt");
         var key = Encoding.UTF8.GetBytes(jwtSection.GetValue<string>("Key"));
@@ -80,6 +79,5 @@ public static class DependencyInjection
             });
 
         services.AddAuthorization();
-        
     }
 }

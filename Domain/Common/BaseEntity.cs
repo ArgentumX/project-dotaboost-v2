@@ -7,8 +7,7 @@ public abstract class BaseEntity
     public Guid Id { get; set; }
     private readonly List<BaseEvent> _domainEvents = new();
 
-    [NotMapped]
-    public IReadOnlyCollection<BaseEvent> DomainEvents => _domainEvents.AsReadOnly();
+    [NotMapped] public IReadOnlyCollection<BaseEvent> DomainEvents => _domainEvents.AsReadOnly();
 
     public void AddDomainEvent(BaseEvent domainEvent)
     {

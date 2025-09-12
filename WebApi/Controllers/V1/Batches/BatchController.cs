@@ -20,22 +20,22 @@ public class BatchController : BaseController
         var result = await Mediator.Send(query);
         return TypedResults.Ok(result);
     }
-    
+
     [HttpGet("{id:guid}")]
     public async Task<Ok<BatchDto>> GetBoostOrderDetails(Guid id)
     {
-        var query = new GetBatchDetailsQuery() {
+        var query = new GetBatchDetailsQuery
+        {
             Id = id
         };
         var result = await Mediator.Send(query);
-        return TypedResults.Ok(result); 
+        return TypedResults.Ok(result);
     }
-    
+
     [HttpPost]
     public async Task<Ok<BatchDto>> CreateBatch([FromBody] CreateBatchCommand command)
     {
         var result = await Mediator.Send(command);
         return TypedResults.Ok(result);
     }
-
 }

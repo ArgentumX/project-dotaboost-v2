@@ -11,12 +11,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Boosters.Queries.GetBoosterApplications;
 
-public class GetBoosterApplicationsQuery(BoosterApplicationFilter queryFilter) : IRequest<PaginatedList<BoosterApplicationDto>>
+public class GetBoosterApplicationsQuery(BoosterApplicationFilter queryFilter)
+    : IRequest<PaginatedList<BoosterApplicationDto>>
 {
     public BoosterApplicationFilter QueryFilter { get; init; } = queryFilter;
 }
 
-public class GetBoosterApplicationsHandler 
+public class GetBoosterApplicationsHandler
     : IRequestHandler<GetBoosterApplicationsQuery, PaginatedList<BoosterApplicationDto>>
 {
     private readonly IMapper _mapper;
@@ -24,8 +25,8 @@ public class GetBoosterApplicationsHandler
     private readonly IUserContext _userContext;
 
     public GetBoosterApplicationsHandler(
-        IMapper mapper, 
-        IApplicationDbContext context, 
+        IMapper mapper,
+        IApplicationDbContext context,
         IUserContext userContext)
     {
         _mapper = mapper;
@@ -34,15 +35,15 @@ public class GetBoosterApplicationsHandler
     }
 
     public async Task<PaginatedList<BoosterApplicationDto>> Handle(
-        GetBoosterApplicationsQuery request, 
+        GetBoosterApplicationsQuery request,
         CancellationToken cancellationToken)
     {
         var query = _context.BoosterApplications.AsQueryable();
         if (!_userContext.IsInRole("Admin"))
             query = query.Where(app => app.UserId == _userContext.UserId);
-        
+
         query = query.ApplyFilterWithoutPagination(request.QueryFilter);
-        
+
         var result = await query
             .ProjectTo<BoosterApplicationDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(request.QueryFilter.Page, request.QueryFilter.PerPage, cancellationToken);

@@ -13,7 +13,6 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 
 namespace WebApi.Controllers.V1.Account;
 
-
 [ApiVersion(1.0)]
 public class AccountController : BaseController
 {
@@ -39,16 +38,13 @@ public class AccountController : BaseController
         var user = new ApplicationUser
         {
             UserName = model.Email,
-            Email = model.Email,
+            Email = model.Email
         };
 
         var userResult = await _userManager.CreateAsync(user, model.Password);
-        if (!userResult.Succeeded)
-        {
-            return BadRequest(userResult.Errors);
-        }
+        if (!userResult.Succeeded) return BadRequest(userResult.Errors);
 
-        var userDto = new UserDto()
+        var userDto = new UserDto
         {
             Id = Guid.Parse(user.Id),
             Email = user.Email,
@@ -71,7 +67,7 @@ public class AccountController : BaseController
         var userResult = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
         if (!userResult.Succeeded) return Unauthorized("Invalid credentials");
 
-        var userDto = new UserDto()
+        var userDto = new UserDto
         {
             Id = Guid.Parse(user.Id),
             Email = user.Email,
@@ -85,4 +81,5 @@ public class AccountController : BaseController
 }
 
 public record RegisterDto(string Email, string Password);
+
 public record LoginDto(string Email, string Password);

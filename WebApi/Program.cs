@@ -12,10 +12,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services
 builder.Services.AddOpenApi();
 builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices(builder.Configuration); 
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 builder.Services.AddControllers();
-builder.Services.AddSwaggerGen(); 
+builder.Services.AddSwaggerGen();
 builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -25,10 +25,7 @@ builder.Services.AddApiVersioning(options =>
     options.ReportApiVersions = true;
     options.DefaultApiVersion = new ApiVersion(1, 0);
     options.ReportApiVersions = true;
-}).AddMvc(options =>
-{
-    options.Conventions.Add(new VersionByNamespaceConvention());
-}).AddApiExplorer(options =>
+}).AddMvc(options => { options.Conventions.Add(new VersionByNamespaceConvention()); }).AddApiExplorer(options =>
 {
     options.GroupNameFormat = "'v'V";
     options.SubstituteApiVersionInUrl = true;
@@ -38,8 +35,8 @@ builder.Services.AddRateLimiter(options =>
 {
     options.AddPolicy<string>("fixed", context =>
         RateLimitPartition.GetFixedWindowLimiter(
-            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
-            factory: _ => new FixedWindowRateLimiterOptions
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
             {
                 PermitLimit = 5,
                 Window = TimeSpan.FromSeconds(10),

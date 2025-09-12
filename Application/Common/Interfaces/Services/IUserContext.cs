@@ -9,6 +9,6 @@ public interface IUserContext
     string? UserEmail { get; }
     bool IsInRole(string role);
     IEnumerable<Claim> GetClaims();
-    IEnumerable<String> GetRoles();
+    IEnumerable<string> GetRoles();
     UserDto GetUserDto();
 }

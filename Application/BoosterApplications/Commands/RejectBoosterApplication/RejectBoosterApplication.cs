@@ -16,14 +16,12 @@ public class RejectBoosterApplicationCommand : IRequest<BoosterApplicationDto>
     public Guid? ApplicationId { get; set; }
 }
 
-
 public class RejectBoosterApplicationValidator : AbstractValidator<RejectBoosterApplicationCommand>
 {
     public RejectBoosterApplicationValidator()
     {
     }
 }
-
 
 public class RejectBoosterApplicationHandler : IRequestHandler<RejectBoosterApplicationCommand, BoosterApplicationDto>
 {
@@ -38,22 +36,24 @@ public class RejectBoosterApplicationHandler : IRequestHandler<RejectBoosterAppl
         _context = context;
         _mapper = mapper;
     }
-    public async Task<BoosterApplicationDto> Handle(RejectBoosterApplicationCommand request, CancellationToken cancellationToken)
+
+    public async Task<BoosterApplicationDto> Handle(RejectBoosterApplicationCommand request,
+        CancellationToken cancellationToken)
     {
         var entity = await _context.BoosterApplications.FirstOrDefaultAsync(application =>
                 application.Id == request.ApplicationId,
             cancellationToken
         );
-        
+
         if (entity == null)
             throw new NotFoundException(nameof(BoosterApplication), request.ApplicationId ?? Guid.Empty);
 
         if (entity.Status != ApplicationStatus.Pending)
             throw new BadRequestException("Application status is wrong");
-        
+
         entity.Status = ApplicationStatus.Rejected;
         await _context.SaveChangesAsync(cancellationToken);
-        
+
         var result = _mapper.Map<BoosterApplicationDto>(entity);
         return result;
     }

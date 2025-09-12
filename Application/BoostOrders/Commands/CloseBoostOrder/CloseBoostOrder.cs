@@ -11,11 +11,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.BoostOrders.Commands.DeleteBoostOrder;
 
-public class CloseBoostOrderCommand : ActorCommand<BoostOrderDto>
+public class CloseBoostOrderCommand : SenderRequiredRequest<BoostOrderDto>
 {
     public Guid? Id { get; set; }
 }
-
 
 public class CloseBoostOrderHandler : IRequestHandler<CloseBoostOrderCommand, BoostOrderDto>
 {
@@ -25,11 +24,12 @@ public class CloseBoostOrderHandler : IRequestHandler<CloseBoostOrderCommand, Bo
     public CloseBoostOrderHandler(
         IApplicationDbContext context,
         IMapper mapper
-        )
+    )
     {
         _context = context;
         _mapper = mapper;
     }
+
     public async Task<BoostOrderDto> Handle(CloseBoostOrderCommand request, CancellationToken cancellationToken)
     {
         if (request.Id == null)
@@ -37,13 +37,13 @@ public class CloseBoostOrderHandler : IRequestHandler<CloseBoostOrderCommand, Bo
 
         var entity = await _context.BoostOrders.FirstOrDefaultAsync(order =>
             order.Id == request.Id && order.IsClosed == false, cancellationToken);
-        
-        if (entity == null || entity.UserId != request.ActorId)
+
+        if (entity == null || entity.UserId != request.SenderId)
             throw new NotFoundException(nameof(BoostOrder), request.Id);
-        
+
         entity.Close();
         await _context.SaveChangesAsync(cancellationToken);
-        
+
         var result = _mapper.Map<BoostOrderDto>(entity);
         return result;
     }

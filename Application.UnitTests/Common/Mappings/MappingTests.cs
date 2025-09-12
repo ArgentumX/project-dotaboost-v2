@@ -19,7 +19,7 @@ public class MappingTests
 
     public MappingTests()
     {
-        var loggerFactory = LoggerFactory.Create(cfg => {});
+        var loggerFactory = LoggerFactory.Create(cfg => { });
         _configuration = new MapperConfiguration(
             cfg => cfg.AddMaps(Assembly.GetAssembly(typeof(IApplicationDbContext))),
             loggerFactory
@@ -27,13 +27,13 @@ public class MappingTests
 
         _mapper = _configuration.CreateMapper();
     }
-    
+
     [Test]
     public void ShouldHaveValidConfiguration()
     {
         _configuration.AssertConfigurationIsValid();
     }
-    
+
     [Test]
     [TestCase(typeof(Booster), typeof(BoosterDto))]
     [TestCase(typeof(BoostOrder), typeof(BoostOrderDto))]
@@ -50,7 +50,7 @@ public class MappingTests
     {
         if (type.GetConstructor(Type.EmptyTypes) != null)
             return Activator.CreateInstance(type)!;
-        
+
         return RuntimeHelpers.GetUninitializedObject(type);
     }
 }

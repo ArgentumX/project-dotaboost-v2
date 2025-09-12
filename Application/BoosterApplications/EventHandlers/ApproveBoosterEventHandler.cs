@@ -14,7 +14,7 @@ public class ApproveBoosterEventHandler : INotificationHandler<ApproveBoosterEve
     {
         _mediator = mediator;
     }
-    
+
     public async Task Handle(ApproveBoosterEvent notification, CancellationToken cancellationToken)
     {
         var newBooster = await CreateBooster(notification);
@@ -22,9 +22,9 @@ public class ApproveBoosterEventHandler : INotificationHandler<ApproveBoosterEve
 
     private async Task<BoosterDto> CreateBooster(ApproveBoosterEvent notification)
     {
-        var command = new CreateBoosterCommand()
+        var command = new CreateBoosterCommand
         {
-            ActorId = notification.Application.UserId,
+            SenderId = notification.Application.UserId
         };
         var result = await _mediator.Send(command);
         return result;

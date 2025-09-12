@@ -7,7 +7,7 @@ namespace Domain.Events;
 public class ApproveBoosterEvent : BaseEvent
 {
     public BoosterApplication Application { get; }
-    
+
     public ApproveBoosterEvent(BoosterApplication application)
     {
         Application = application;

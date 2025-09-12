@@ -5,14 +5,14 @@ using AutoMapper;
 
 namespace Application.BoostOrders.Commands.PatchBoostOrder;
 
-using Application.Common.Exceptions;
-using Application.Common.Interfaces;
+using Common.Exceptions;
+using Common.Interfaces;
 using Domain.Entities;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-public class PatchBoostOrderCommand : ActorCommand<BoostOrderDto>
+public class PatchBoostOrderCommand : SenderRequiredRequest<BoostOrderDto>
 {
     public string Description { get; set; } = "";
     public Guid? Id { get; set; }
@@ -20,13 +20,12 @@ public class PatchBoostOrderCommand : ActorCommand<BoostOrderDto>
 
 public class PatchBoostOrderCommandValidator : AbstractValidator<PatchBoostOrderCommand>
 {
-    public PatchBoostOrderCommandValidator() {
+    public PatchBoostOrderCommandValidator()
+    {
         RuleFor(c => c.Description)
             .MaximumLength(256);
     }
 }
-
-
 
 public class PatchBoostOrderHandler : IRequestHandler<PatchBoostOrderCommand, BoostOrderDto>
 {
@@ -46,10 +45,10 @@ public class PatchBoostOrderHandler : IRequestHandler<PatchBoostOrderCommand, Bo
     {
         var entity = await _context.BoostOrders.FirstOrDefaultAsync(order =>
             order.Id == request.Id, cancellationToken);
-        
-        if (entity == null || entity.UserId != request.ActorId)
+
+        if (entity == null || entity.UserId != request.SenderId)
             throw new NotFoundException(nameof(BoostOrder), request.Id);
-        
+
         entity.Description = request.Description;
         await _context.SaveChangesAsync(cancellationToken);
         var result = _mapper.Map<BoostOrderDto>(entity);

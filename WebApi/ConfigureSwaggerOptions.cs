@@ -8,7 +8,7 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
 {
     public void Configure(SwaggerGenOptions options)
     {
-        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             Name = "Authorization",
             Type = SecuritySchemeType.Http,
@@ -17,7 +17,7 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
             In = ParameterLocation.Header,
             Description = "Введите JWT токен в формате: Bearer {ваш токен}"
         });
-        
+
         options.AddSecurityRequirement(new OpenApiSecurityRequirement
         {
             {

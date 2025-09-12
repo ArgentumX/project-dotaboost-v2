@@ -8,5 +8,4 @@ public interface IApplicationUser
     string Email { get; }
     IEnumerable<string> Roles { get; }
     IEnumerable<Claim> Claims { get; }
-    
 }

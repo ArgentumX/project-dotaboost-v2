@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Batches.Commands.CreateBatch;
 
-public class CreateBatchCommand : ActorCommand<BatchDto>
+public class CreateBatchCommand : SenderRequiredRequest<BatchDto>
 {
     public string Screen { get; set; } = null!;
     public int ReceivedMmr { get; set; }
@@ -26,15 +26,14 @@ public class CreateBatchValidator : AbstractValidator<CreateBatchCommand>
     {
         RuleFor(x => x.OrderId)
             .NotEmpty();
-        
+
         RuleFor(x => x.IsWin)
             .NotEmpty();
-        
+
         RuleFor(x => x.ReceivedMmr)
             .NotEmpty();
     }
 }
-
 
 public class CreateBatchHandler : IRequestHandler<CreateBatchCommand, BatchDto>
 {
@@ -49,19 +48,19 @@ public class CreateBatchHandler : IRequestHandler<CreateBatchCommand, BatchDto>
         _context = context;
         _mapper = mapper;
     }
+
     public async Task<BatchDto> Handle(CreateBatchCommand request, CancellationToken cancellationToken)
     {
-        
         var booster = await _context.Boosters.FirstOrDefaultAsync(x =>
-            x.UserId == request.ActorId);
-        
+            x.UserId == request.SenderId);
+
         if (booster == null)
-            throw new NotFoundException(nameof(Booster), request.ActorId);
-        
+            throw new NotFoundException(nameof(Booster), request.SenderId);
+
         if (booster.OrderId != request.OrderId)
             throw new BadRequestException("Order id does not match");
-        
-        
+
+
         var entity = new Batch
         {
             Screen = request.Screen,
@@ -70,7 +69,7 @@ public class CreateBatchHandler : IRequestHandler<CreateBatchCommand, BatchDto>
             OrderId = request.OrderId,
             BoosterId = booster.Id
         };
-        
+
         await _context.Batches.AddAsync(entity, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         var result = _mapper.Map<BatchDto>(entity);

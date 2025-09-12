@@ -55,7 +55,7 @@ public class BoostOrderController : BaseController
         var result = await Mediator.Send(command);
         return TypedResults.Ok(result);
     }
-    
+
     [HttpPatch("{id:guid}")]
     public async Task<Ok<BoostOrderDto>> PatchBoostOrder(Guid id, [FromBody] PatchBoostOrderCommand command)
     {

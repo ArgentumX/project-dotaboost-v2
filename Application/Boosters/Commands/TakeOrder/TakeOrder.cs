@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Boosters.Commands.TakeOrder;
 
-public class TakeOrderCommand : ActorCommand<BoosterDto>
+public class TakeOrderCommand : SenderRequiredRequest<BoosterDto>
 {
     public Guid OrderId { get; set; }
 }
@@ -25,12 +25,13 @@ public class TakeOrderHandler : IRequestHandler<TakeOrderCommand, BoosterDto>
         _context = context;
         _mapper = mapper;
     }
+
     public async Task<BoosterDto> Handle(TakeOrderCommand request, CancellationToken cancellationToken)
-    { 
-        var booster = await _context.Boosters.FirstOrDefaultAsync(x => x.UserId == request.ActorId, cancellationToken);
+    {
+        var booster = await _context.Boosters.FirstOrDefaultAsync(x => x.UserId == request.SenderId, cancellationToken);
         if (booster == null)
             throw new BadRequestException("Not a booster!");
-        
+
         booster.TakeOrder(request.OrderId);
         await _context.SaveChangesAsync(cancellationToken);
         var result = _mapper.Map<BoosterDto>(booster);

@@ -18,7 +18,7 @@ public class BoostOrderDto : AuditableEntityDto
     public int RequiredRating { get; init; }
     public Guid UserId { get; init; }
     public Guid? BoosterId { get; init; }
-    
+
     private class Mapping : Profile
     {
         public Mapping()

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Boosters.Commands.CreateBooster;
 
-public class CreateBoosterCommand : ActorCommand<BoosterDto>
+public class CreateBoosterCommand : SenderRequiredRequest<BoosterDto>
 {
 }
 
@@ -19,10 +19,9 @@ public class CreateBoosterValidator : AbstractValidator<CreateBoosterCommand>
 {
     public CreateBoosterValidator()
     {
-        RuleFor(x => x.ActorId).NotEmpty();
+        RuleFor(x => x.SenderId).NotEmpty();
     }
 }
-
 
 public class CreateBoosterHandler : IRequestHandler<CreateBoosterCommand, BoosterDto>
 {
@@ -37,17 +36,18 @@ public class CreateBoosterHandler : IRequestHandler<CreateBoosterCommand, Booste
         _context = context;
         _mapper = mapper;
     }
+
     public async Task<BoosterDto> Handle(CreateBoosterCommand request, CancellationToken cancellationToken)
     {
-        var isBooster = _context.Boosters.Any(x => x.UserId == request.ActorId);
+        var isBooster = _context.Boosters.Any(x => x.UserId == request.SenderId);
         if (isBooster)
             throw new BadRequestException("Already booster");
-          
+
         var entity = new Booster
         {
-            UserId = (Guid)request.ActorId!,
+            UserId = (Guid)request.SenderId!
         };
-        
+
         await _context.Boosters.AddAsync(entity, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         var result = _mapper.Map<BoosterDto>(entity);
