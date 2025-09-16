@@ -11,18 +11,16 @@ using Moq.EntityFrameworkCore;
 namespace Application.UnitTests.BoosterApplications;
 
     [TestFixture]
-    public class ApproveBoosterApplicationHandlerTests
+    public class ApproveBoosterApplicationHandlerTests : CommandTestsBase
     {
         private Mock<IApplicationDbContext> _mockContext;
-        private Mock<IMapper> _mockMapper;
         private ApproveBoosterApplicationHandler _handler;
 
         [SetUp]
         public void Setup()
         {
             _mockContext = new Mock<IApplicationDbContext>();
-            _mockMapper = new Mock<IMapper>();
-            _handler = new ApproveBoosterApplicationHandler(_mockContext.Object, _mockMapper.Object);
+            _handler = new ApproveBoosterApplicationHandler(_mockContext.Object, RealMapper);
         }
 
         [Test]
@@ -40,14 +38,6 @@ namespace Application.UnitTests.BoosterApplications;
             _mockContext
                 .Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(1);
-            
-            _mockMapper
-                .Setup(m => m.Map<BoosterApplicationDto>(It.IsAny<BoosterApplication>()))
-                .Returns<BoosterApplication>(b => new BoosterApplicationDto
-                {
-                    Id = b.Id,
-                    Status = b.Status
-                });
 
             var command = new ApproveBoosterApplicationCommand { ApplicationId = applicationId };
 
@@ -60,7 +50,7 @@ namespace Application.UnitTests.BoosterApplications;
             Assert.That(result.Status, Is.EqualTo(ApplicationStatus.Approved));
             Assert.That(result.Id, Is.EqualTo(applicationId));
             _mockContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-            _mockMapper.Verify(m => m.Map<BoosterApplicationDto>(It.Is<BoosterApplication>(b => b == boosterApplication)), Times.Once);
+            Assert.That(result, Is.TypeOf<BoosterApplicationDto>());
         }
     
 
