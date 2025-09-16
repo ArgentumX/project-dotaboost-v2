@@ -2,7 +2,6 @@
 using Application.Boosters.Commands.ApproveBoosterApplication;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
-using AutoMapper;
 using Domain.Common.Enum;
 using Domain.Entities;
 using Moq;
