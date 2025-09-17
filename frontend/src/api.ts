@@ -2,7 +2,7 @@
 import type { AxiosInstance } from 'axios';
 
 const api: AxiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api/',
     // withCredentials: true, // если вы используете HttpOnly cookie
 });
 
@@ -20,8 +20,7 @@ api.interceptors.response.use(
     (err) => {
         if (err?.response?.status === 401) {
             localStorage.removeItem('token');
-            // простой редирект (не импортируем router чтобы избежать циклов)
-            window.location.href = '/Account/login';
+            window.location.href = '/login';
         }
         return Promise.reject(err);
     }
