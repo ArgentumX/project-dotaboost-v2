@@ -53,7 +53,7 @@ public class AccountController : BaseController
         };
         var command = new GenerateJwtTokenCommand(userDto);
         var result = await Mediator.Send(command);
-        return Ok(result);
+        return Ok(new { token=result, user=userDto });
     }
 
     [HttpPost("login")]
@@ -76,7 +76,7 @@ public class AccountController : BaseController
         };
         var command = new GenerateJwtTokenCommand(userDto);
         var result = await Mediator.Send(command);
-        return Ok(result);
+        return Ok(new { token=result, user=userDto });
     }
 }
 
