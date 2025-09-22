@@ -1,0 +1,49 @@
+# Visual Studio / Rider / IDE
+.vs
+.idea
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build outputs
+bin/
+obj/
+publish/
+**/bin/
+**/obj/
+
+# Runtime files, local development secrets & settings
+appsettings.Development.json
+secrets.json
+*.pfx
+*.pem
+*.key
+.env
+.env.* 
+*.local
+
+# NuGet & caches
+*.nupkg
+packages/
+.nuget/
+.vscode/
+
+# Logs, temp, OS files
+*.log
+*.sqlite
+*.db
+*.DS_Store
+Thumbs.db
+
+# Docker / compose outputs (avoid copying docker artifacts)
+Dockerfile.*
+docker-compose*.yml
+docker-compose.override.yml
+
+# Test artifacts
+TestResults/
+*.trx
+
+# Misc
+publish-output/

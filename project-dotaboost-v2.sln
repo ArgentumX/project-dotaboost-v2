@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{F9EE
 		backend\project-dotaboost-v2.csproj = backend\project-dotaboost-v2.csproj
 		backend\project-dotaboost-v2.sln.DotSettings.user = backend\project-dotaboost-v2.sln.DotSettings.user
 		backend\Dockerfile = backend\Dockerfile
+		backend\.dockerignore = backend\.dockerignore
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AE1E0EE9-F4B7-42B0-8E17-9D0A7DC21953}"

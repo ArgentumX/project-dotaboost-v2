@@ -36,7 +36,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(  
         policy =>  
         {  
-            policy.AllowAnyOrigin() // TODO removes
+            policy.AllowAnyOrigin() // TODO remove
                 .AllowAnyHeader()  
                 .AllowAnyMethod();  
         });  
@@ -78,12 +78,18 @@ if (app.Environment.IsDevelopment())
 app.UseRouting();
 
 
-// CORS 
-#if DEBUG
-app.UseCors();
-#else
-app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-#endif
+// CORS
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors(options => options
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
+}
+else
+{
+    app.UseCors();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
