@@ -31,6 +31,17 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
+builder.Services.AddCors(options =>  
+{  
+    options.AddDefaultPolicy(  
+        policy =>  
+        {  
+            policy.AllowAnyOrigin() // TODO removes
+                .AllowAnyHeader()  
+                .AllowAnyMethod();  
+        });  
+});  
+
 builder.Services.AddRateLimiter(options =>
 {
     options.AddPolicy<string>("fixed", context =>
@@ -64,14 +75,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
 app.UseRouting();
 
+
 // CORS 
-app.UseCors(policy => policy
-    .AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader());
+#if DEBUG
+app.UseCors();
+#else
+app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+#endif
 
 app.UseAuthentication();
 app.UseAuthorization();
