@@ -28,7 +28,7 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-            options.UseSqlite(connectionString);
+            options.UseNpgsql(connectionString);
         });
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());

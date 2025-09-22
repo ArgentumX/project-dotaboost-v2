@@ -1,4 +1,16 @@
 ﻿services:
+  db:
+    image: postgres:16-alpine
+    container_name: project-db
+    environment:
+      POSTGRES_DB: your_db_name       
+      POSTGRES_USER: your_user      
+      POSTGRES_PASSWORD: your_password  
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal-net
+
   backend:
     build:
       context: ./backend
@@ -11,8 +23,11 @@
       - ASPNETCORE_URLS=http://+:5001
     env_file:
       - /backend/src/WebApi/.env
+    depends_on:
+      - db
     networks:
-      - project-net
+      - internal-net
+      - frontend-net
 
   frontend:
     build:
@@ -27,8 +42,14 @@
     depends_on:
       - backend
     networks:
-      - project-net
+      - frontend-net
 
 networks:
-  project-net:
+  internal-net:
     driver: bridge
+    internal: true
+  frontend-net:
+    driver: bridge
+    
+volumes:
+  postgres_data:
