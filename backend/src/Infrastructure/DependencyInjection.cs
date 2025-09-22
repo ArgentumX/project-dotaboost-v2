@@ -53,8 +53,8 @@ public static class DependencyInjection
             .AddDefaultTokenProviders();
 
         // JWT configuration
-        var jwtSection = configuration.GetSection("Jwt");
-        var key = Encoding.UTF8.GetBytes(jwtSection.GetValue<string>("Key"));
+        var jwtSection = configuration.GetSection("JWT");
+        var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT__KEY"));
 
         services.AddAuthentication(options =>
             {

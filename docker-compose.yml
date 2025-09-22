@@ -9,6 +9,8 @@
       - "5001:5001"
     environment:
       - ASPNETCORE_URLS=http://+:5001
+    env_file:
+      - /backend/src/WebApi/.env
     networks:
       - project-net
 
@@ -17,7 +19,7 @@
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        VITE_API_URL: "http://backend:5001/api/v1"
+        VITE_API_URL: "http://localhost:5001/api/v1"
     image: project-frontend:latest
     container_name: project-frontend
     ports:

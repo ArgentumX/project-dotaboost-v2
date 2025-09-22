@@ -6,8 +6,11 @@ using Infrastructure.Data;
 using WebApi;
 using WebApi.Middleware;
 using System.Threading.RateLimiting;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+if (builder.Environment.IsDevelopment())
+    Env.Load(".env.Development");
 
 // Add services
 builder.Services.AddOpenApi();
