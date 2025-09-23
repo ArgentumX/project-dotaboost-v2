@@ -3,11 +3,14 @@ using Application.Boosters;
 using Application.Boosters.Commands.ApproveBoosterApplication;
 using Application.Boosters.Commands.RejectBoosterApplication;
 using Asp.Versioning;
+using Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers.V1.BoosterApplication;
 
+[Authorize(Roles = Roles.Administrator)]
 [ApiVersion(1.0)]
 public class AdminBoosterApplicationController : BaseController
 {

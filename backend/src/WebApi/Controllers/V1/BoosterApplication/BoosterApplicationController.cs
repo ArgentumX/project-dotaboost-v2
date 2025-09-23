@@ -6,11 +6,13 @@ using Application.Boosters.Queries;
 using Application.Boosters.Queries.GetBoosterApplications;
 using Application.Common.Models;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace WebApi.Controllers.V1.BoosterApplication;
 
+[Authorize]
 [ApiVersion(1.0)]
 public class BoosterApplicationController : BaseController
 {

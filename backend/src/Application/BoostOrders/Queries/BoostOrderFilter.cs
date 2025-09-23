@@ -6,7 +6,6 @@ public class BoostOrderFilter : PaginationFilterBase
 {
     public bool? IsParty { get; set; }
     public bool? IsPriority { get; set; }
-    public string? SteamUsername { get; set; }
     public bool? IsPaid { get; set; }
     public bool? IsClosed { get; set; }
     public int? StartRating { get; set; }

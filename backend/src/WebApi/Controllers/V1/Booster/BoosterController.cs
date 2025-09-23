@@ -6,11 +6,13 @@ using Application.Boosters.Queries.GetBoosterDetails;
 using Application.Boosters.Queries.GetBoosters;
 using Application.Common.Models;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers.V1.Booster;
 
+[Authorize]
 [ApiVersion(1.0)]
 public class BoosterController : BaseController
 {
@@ -35,6 +37,7 @@ public class BoosterController : BaseController
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<Ok<PaginatedList<BoosterDto>>> GetBatches([FromQuery] BoosterFilter filter)
     {
         var query = new GetBoostersQuery(filter);
@@ -43,6 +46,7 @@ public class BoosterController : BaseController
     }
 
     [HttpGet("{id:guid}")]
+    [AllowAnonymous]
     public async Task<Ok<BoosterDto>> GetBoostOrderDetails(Guid id)
     {
         var query = new GetBoosterDetailsQuery

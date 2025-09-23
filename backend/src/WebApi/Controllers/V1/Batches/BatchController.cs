@@ -5,15 +5,18 @@ using Application.Batches.Queries.GetBatches;
 using Application.Boosters.Queries.GetBatchDetails;
 using Application.Common.Models;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers.V1.Batches;
 
+[Authorize]
 [ApiVersion(1.0)]
 public class BatchController : BaseController
 {
     [HttpGet]
+    [AllowAnonymous]
     public async Task<Ok<PaginatedList<BatchDto>>> GetBatches([FromQuery] BatchFilter filter)
     {
         var query = new GetBatchsQuery(filter);
@@ -22,6 +25,7 @@ public class BatchController : BaseController
     }
 
     [HttpGet("{id:guid}")]
+    [AllowAnonymous]
     public async Task<Ok<BatchDto>> GetBoostOrderDetails(Guid id)
     {
         var query = new GetBatchDetailsQuery
