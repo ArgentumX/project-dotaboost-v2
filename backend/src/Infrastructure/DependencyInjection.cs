@@ -12,6 +12,7 @@ using Application.Common.Interfaces.Services;
 using Infrastructure.Data.Interceptors;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Infrastructure;
 
@@ -31,8 +32,8 @@ public static class DependencyInjection
             options.UseNpgsql(connectionString);
         });
 
-        services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
-
+        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+        services.AddScoped<ApplicationDbInitializer>();
 
         // Current User service
         services.AddScoped<IUserContext, UserContext>();
@@ -74,7 +75,8 @@ public static class DependencyInjection
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromSeconds(30)
+                    ClockSkew = TimeSpan.FromSeconds(30),
+                    NameClaimType = JwtRegisteredClaimNames.Sub,
                 };
             });
 

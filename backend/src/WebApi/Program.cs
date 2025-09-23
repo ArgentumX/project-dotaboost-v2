@@ -61,14 +61,7 @@ builder.Services.AddRateLimiter(options =>
 
 var app = builder.Build();
 
-// DB init (seed)
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    // dbContext.Database.Migrate(); // todo
-    ApplicationDbInitializer.Initialize(dbContext);
-}
-
+await app.InitializeDatabaseAsync();
 app.UseCustomExceptionHandler();
 
 if (app.Environment.IsDevelopment())
