@@ -55,6 +55,11 @@ public async Task<string> GenerateJwtToken(UserDto user)
                 .Select(r => r.Trim())
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList();
+
+    foreach (var r in roles)
+    {
+        claims.Add(new Claim("role", r)); 
+    }
     
     if (roles.Any())
     {

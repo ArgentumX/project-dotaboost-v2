@@ -2,6 +2,7 @@
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.Services;
 using Application.Users;
+using Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Services;
@@ -16,14 +17,14 @@ public class UserContext : IUserContext
     }
 
     private ClaimsPrincipal User => _httpContextAccessor.HttpContext?.User
-                                    ?? throw new InvalidOperationException("No user context available");
+                                    ?? throw new UnauthorizedException();
 
     public Guid UserId
     {
         get
         {
             var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                          ?? throw new InvalidOperationException("User ID claim not found");
+                          ?? throw new UnauthorizedException();
 
             return Guid.Parse(idClaim);
         }
