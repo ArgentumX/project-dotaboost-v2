@@ -6,5 +6,7 @@ riderModule.iml
 *.db
 *.db-wal
 *.db-shm
-.env.*
+.env.Development
+.env.Production
+.env.Stagging
 .env
