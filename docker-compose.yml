@@ -38,7 +38,7 @@
     image: project-frontend:latest
     container_name: project-frontend
     ports:
-      - "8080:8080"
+      - "8080:80"
     depends_on:
       - backend
     networks:
